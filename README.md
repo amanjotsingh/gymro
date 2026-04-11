@@ -1,40 +1,72 @@
-# GymPro — Gym Trainer Management App
+# GymPro — Bootcamp Trainer Management App
 
-A mobile-friendly web application for gym trainers to manage appointments, clients, groups, payments, and send WhatsApp reminders — all from one dashboard.
+A mobile-friendly web application for bootcamp gym trainers to manage group sessions, 90+ clients, payments, progress photos, and social sharing — all from one dashboard. No backend, no build step, runs from a single `index.html`.
 
 ---
 
 ## Features
 
 ### Dashboard
-Today's schedule at a glance, upcoming appointments, live stats, and a highlighted panel for any pending change requests from clients.
+Live stats (today's classes, clients today, revenue, overdue payments) plus a full interactive calendar with three views.
 
-### Appointments
-Book sessions, filter by status (upcoming / today / pending / change requests), confirm or cancel with one click, and send WhatsApp reminders instantly.
+### Calendar — Daily / Weekly / Monthly
+- **Daily view** — scrollable hour-by-hour timeline, sessions appear as colour-coded blocks in their time slots
+- **Weekly view** — 7-column grid, today highlighted in blue, all sessions visible at a glance
+- **Monthly view** — full month grid with session pills per day
+- **Hover tooltip** — hovering any session block pops up a card listing every enrolled client by name
+- **Rename any class** — click the ✎ pencil icon on any session block and type a new name. Persists in localStorage
+- **Navigate** — ‹ › arrows move by day/week/month; "Today" button snaps back to current date
 
-### Clients
-Full profile cards with age, weight, height, BMI (auto-calculated), goal, notes, and appointment history. Add new clients or edit existing ones, including their pre-joining goal in their own words.
+### Bootcamp Sessions (Mon–Fri)
+- **Morning block:** 6:00 · 7:00 · 8:00 · 9:00 am
+- **Evening block:** 4:00 · 5:00 · 6:00 · 7:00 pm
+- Default class names: Early Birds, Rise & Grind, Morning Power, Peak Performance, Afternoon Burn, Rush Hour Fit, Sunset Sweat, Night Owls
 
-### Groups
-Create client groups (e.g. "Morning Crew"), compose a message, and send it to each member individually via WhatsApp with one click per person.
+### 90 Clients
+Generated automatically on first load, evenly distributed across the 8 daily slots (~11 per class). All client data is editable and persisted in localStorage.
 
-### WhatsApp Reminders (Free!)
-Every reminder and group message uses `wa.me` links — completely free, no API key needed. It opens WhatsApp with the message pre-filled. The trainer just hits send. When you're ready to upgrade to automated bulk SMS, Twilio is the natural next step (~$0.0079/message).
+### Before & After Photos + Progress Card
+- Upload before and after photos on any client profile
+- Click "Generate Progress Card" to create a 1080×1080 branded image
+- **Mobile**: Web Share API sends the image directly to Instagram or any app
+- **Desktop**: Download the card, then open Instagram to post manually
 
-### Client Change Requests
-Clients can flag a reschedule request (stored on their profile), which surfaces as a warning banner on the dashboard and in the appointments tab with a one-click reschedule flow.
+### Payments
+Track monthly bootcamp fees. View total, paid, pending, and overdue. Add payments and mark as paid.
 
-### Login Screen
-Secure trainer login portal. Demo credentials: username `trainer` / password `gym123`.
+### WhatsApp
+All buttons are present but **disabled by default**. Set `WA_ENABLED = true` in `index.html` to activate.
 
-### Payment Tracking
-Track fees and invoices per client. View total earned, pending, and overdue amounts. Add payments, mark as paid, and export a full payment report to PDF.
-
-### Export to PDF
-Export the full appointment schedule, individual client profiles (with metrics and history), or the complete payment report — all powered by jsPDF, no server required.
+### Login
+Credentials: `trainer` / `gym123`
 
 ### Mobile Friendly
-At smaller screen widths, the sidebar collapses and a bottom navigation bar appears, making the app fully usable on phones and tablets.
+Sidebar collapses on small screens, bottom nav bar appears.
+
+---
+
+## Project Files
+
+```
+gymro/
+├── index.html    ← entire app (self-contained)
+├── README.md     ← this file
+├── CLAUDE.md     ← technical context for AI / developers
+└── .gitignore
+```
+
+---
+
+## Hosting
+
+### GitHub Pages (current)
+1. Create a **public** repo on github.com
+2. Upload all 4 files
+3. Go to **Settings → Pages → Source → Deploy from branch → main → / (root) → Save**
+4. Live at `https://yourusername.github.io/gymro`
+
+### Vercel (upgrade path)
+Import the same GitHub repo at vercel.com — zero config, deploys in ~30 seconds. Best when adding a backend (Supabase, Twilio API routes, etc.).
 
 ---
 
@@ -42,80 +74,33 @@ At smaller screen widths, the sidebar collapses and a bottom navigation bar appe
 
 | Layer | Technology |
 |---|---|
-| UI Framework | React 18 (via CDN, no build step) |
-| Styling | CSS custom properties + responsive grid |
+| UI Framework | React 18 (CDN) |
+| Progress Cards | HTML Canvas API |
 | PDF Export | jsPDF 2.5.1 |
-| Messaging | WhatsApp `wa.me` deep links (free) |
-| Hosting | Any static host (no backend required) |
+| Messaging | WhatsApp wa.me links (disabled by default) |
+| Persistence | Browser localStorage |
+| Hosting | Any static host |
 
 ---
 
-## Messaging: Free vs Paid
+## Enabling WhatsApp
 
-| Option | Cost | Setup | Best for |
-|---|---|---|---|
-| WhatsApp `wa.me` links | Free | None | Manual per-message sending |
-| Twilio SMS | ~$0.0079/msg | API key + account | Automated bulk reminders |
-| WhatsApp Business API | Varies | Meta approval required | High-volume broadcasts |
-
-The app currently uses `wa.me` links. To upgrade to automated SMS, integrate [Twilio](https://www.twilio.com/) by replacing the `window.open` calls with a backend API endpoint.
+In `index.html`, find:
+```js
+const WA_ENABLED = false; // set true to enable WhatsApp links
+```
+Change to `true`. All buttons activate immediately.
 
 ---
 
-## Hosting
-
-### Option 1 — GitHub Pages (current)
-
-1. Create a free account at [github.com](https://github.com)
-2. Click **New repository** → name it `gymro` → set to **Public**
-3. Upload these files:
-   ```
-   index.html
-   README.md
-   CLAUDE.md
-   .gitignore
-   ```
-4. Go to **Settings → Pages → Source → Deploy from branch → main → / (root)**
-5. Your app is live at `https://yourusername.github.io/gymro`
-
-> **Custom domain**: Buy a domain (e.g. Namecheap ~$10/yr), add it under Settings → Pages → Custom domain. GitHub handles SSL automatically.
-
----
-
-### Option 2 — Vercel (recommended for future upgrade)
-
-1. Push the repo to GitHub (same steps above)
-2. Go to [vercel.com](https://vercel.com) → **Import Project** → connect your GitHub repo
-3. No config needed — Vercel detects a static site automatically
-4. Live at `gymro.vercel.app` in ~30 seconds
-
-When you add a backend (Supabase, API routes, etc.), Vercel handles it natively with zero extra config.
-
----
-
-## Getting Started
-
-1. Open the app in any modern browser.
-2. Sign in with your trainer credentials.
-3. Add your clients under the **Clients** tab.
-4. Book appointments from the **Appointments** tab or via the **+ Book** button on the dashboard.
-5. Create groups under **Groups** to send broadcast messages.
-6. Track payments under **Payments** and export reports as needed.
-
----
-
-## Roadmap / Planned Features
-
-- [ ] Recurring appointments (weekly/bi-weekly)
-- [ ] Session notes history per client
-- [ ] Progress charts (weight, BMI over time)
+## Roadmap
+- [ ] Supabase backend (multi-device sync)
 - [ ] Automated SMS reminders via Twilio
+- [ ] Client progress charts (weight/BMI over time)
 - [ ] Multi-trainer support
-- [ ] Google Calendar sync
-- [ ] Client-facing booking portal
+- [ ] Client self-service booking portal
 
 ---
 
 ## License
-
-MIT — free to use and modify.
+MIT

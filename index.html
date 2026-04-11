@@ -3,49 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GymPro — Trainer Management</title>
+  <title>GymPro — Bootcamp Trainer</title>
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg-primary: #ffffff;
-      --bg-secondary: #f5f5f4;
-      --bg-tertiary: #f0efed;
-      --bg-info: #e6f1fb;
-      --bg-success: #eaf3de;
-      --bg-warning: #faeeda;
-      --bg-danger: #fcebeb;
-      --text-primary: #1a1a18;
-      --text-secondary: #6b6b67;
-      --text-info: #185fa5;
-      --text-success: #3b6d11;
-      --text-warning: #854f0b;
-      --text-danger: #a32d2d;
-      --border: rgba(0,0,0,0.12);
-      --border-med: rgba(0,0,0,0.2);
-      --radius-md: 8px;
-      --radius-lg: 12px;
+      --bg-primary: #ffffff; --bg-secondary: #f5f5f4; --bg-tertiary: #f0efed;
+      --bg-info: #e6f1fb; --bg-success: #eaf3de; --bg-warning: #faeeda; --bg-danger: #fcebeb;
+      --text-primary: #1a1a18; --text-secondary: #6b6b67;
+      --text-info: #185fa5; --text-success: #3b6d11; --text-warning: #854f0b; --text-danger: #a32d2d;
+      --border: rgba(0,0,0,0.12); --border-med: rgba(0,0,0,0.22);
+      --radius-md: 8px; --radius-lg: 12px;
       --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg-primary: #1c1c1a;
-        --bg-secondary: #252523;
-        --bg-tertiary: #2a2a28;
-        --bg-info: #0c2d4a;
-        --bg-success: #122609;
-        --bg-warning: #3a2204;
-        --bg-danger: #3a0d0d;
-        --text-primary: #e8e8e4;
-        --text-secondary: #9a9a94;
-        --text-info: #7ab8f5;
-        --text-success: #90c95a;
-        --text-warning: #f0a840;
-        --text-danger: #f09090;
-        --border: rgba(255,255,255,0.1);
-        --border-med: rgba(255,255,255,0.18);
+        --bg-primary:#1c1c1a; --bg-secondary:#252523; --bg-tertiary:#2a2a28;
+        --bg-info:#0c2d4a; --bg-success:#122609; --bg-warning:#3a2204; --bg-danger:#3a0d0d;
+        --text-primary:#e8e8e4; --text-secondary:#9a9a94;
+        --text-info:#7ab8f5; --text-success:#90c95a; --text-warning:#f0a840; --text-danger:#f09090;
+        --border:rgba(255,255,255,0.1); --border-med:rgba(255,255,255,0.2);
       }
     }
     body { font-family: var(--font); background: var(--bg-tertiary); color: var(--text-primary); min-height: 100vh; }
@@ -53,29 +32,29 @@
 
     /* Layout */
     .app-shell { display: flex; min-height: 100vh; }
-    .sidebar { width: 220px; min-width: 220px; background: var(--bg-primary); border-right: 0.5px solid var(--border); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; z-index: 40; }
+    .sidebar { width: 215px; min-width: 215px; background: var(--bg-primary); border-right: 0.5px solid var(--border); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; z-index: 40; }
     .sidebar-logo { padding: 20px 16px 14px; border-bottom: 0.5px solid var(--border); }
     .sidebar-logo h1 { font-size: 18px; font-weight: 600; color: var(--text-primary); }
     .sidebar-logo span { font-size: 11px; color: var(--text-secondary); }
-    .section-label { font-size: 10px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .07em; padding: 12px 16px 4px; }
+    .sec-label { font-size: 10px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .07em; padding: 12px 16px 4px; }
     .sidebar-nav { padding: 8px 0; flex: 1; overflow-y: auto; }
     .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 16px; cursor: pointer; font-size: 13px; color: var(--text-secondary); border-left: 3px solid transparent; transition: all .12s; }
     .nav-item:hover { background: var(--bg-secondary); color: var(--text-primary); }
     .nav-item.active { background: var(--bg-info); color: var(--text-info); border-left-color: #185fa5; }
     .nav-badge { margin-left: auto; background: var(--bg-warning); color: var(--text-warning); border-radius: 10px; font-size: 10px; padding: 1px 6px; font-weight: 600; }
-    .sidebar-footer { padding: 8px 0; border-top: 0.5px solid var(--border); }
-    .logout-btn { display: flex; align-items: center; gap: 8px; padding: 10px 16px; cursor: pointer; font-size: 12px; color: var(--text-secondary); transition: all .12s; }
+    .sidebar-footer { border-top: 0.5px solid var(--border); padding: 6px 0; }
+    .logout-btn { display: flex; align-items: center; gap: 8px; padding: 10px 16px; cursor: pointer; font-size: 12px; color: var(--text-secondary); }
     .logout-btn:hover { background: var(--bg-secondary); color: var(--text-primary); }
-    .main-wrap { margin-left: 220px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
-    .storage-bar { display: flex; align-items: center; gap: 8px; padding: 7px 24px; background: var(--bg-primary); border-bottom: 0.5px solid var(--border); font-size: 11px; color: var(--text-secondary); position: sticky; top: 0; z-index: 30; }
+    .main-wrap { margin-left: 215px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+    .storage-bar { display: flex; align-items: center; gap: 8px; padding: 6px 24px; background: var(--bg-primary); border-bottom: 0.5px solid var(--border); font-size: 11px; color: var(--text-secondary); position: sticky; top: 0; z-index: 30; }
     .storage-dot { width: 7px; height: 7px; border-radius: 50%; background: #3b6d11; flex-shrink: 0; }
-    .main { padding: 24px; flex: 1; }
+    .main { padding: 22px 24px; flex: 1; }
 
     /* Login */
     .login-wrap { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: var(--bg-tertiary); }
     .login-card { background: var(--bg-primary); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 36px; width: 100%; max-width: 380px; }
-    .login-logo { text-align: center; margin-bottom: 28px; }
-    .login-logo h1 { font-size: 28px; font-weight: 700; color: var(--text-primary); letter-spacing: -.5px; }
+    .login-logo { text-align: center; margin-bottom: 26px; }
+    .login-logo h1 { font-size: 28px; font-weight: 700; color: var(--text-primary); }
     .login-logo p { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
     .login-hint { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 10px 12px; font-size: 12px; color: var(--text-secondary); margin-bottom: 18px; line-height: 1.6; }
     .login-err { background: var(--bg-danger); color: var(--text-danger); border-radius: var(--radius-md); padding: 8px 12px; font-size: 12px; margin-bottom: 12px; }
@@ -83,28 +62,30 @@
     /* Buttons */
     .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 13px; border-radius: var(--radius-md); font-size: 13px; cursor: pointer; border: 0.5px solid var(--border-med); background: var(--bg-primary); color: var(--text-primary); transition: all .12s; text-decoration: none; font-family: var(--font); }
     .btn:hover { background: var(--bg-secondary); }
-    .btn:disabled { opacity: .45; cursor: not-allowed; }
+    .btn:disabled { opacity: .4; cursor: not-allowed; }
     .btn-primary { background: var(--bg-info); color: var(--text-info); border-color: #185fa5; }
     .btn-primary:hover { opacity: .88; }
-    .btn-sm { padding: 4px 9px; font-size: 11px; }
+    .btn-sm { padding: 4px 10px; font-size: 11px; }
     .btn-green { background: var(--bg-success); color: var(--text-success); border-color: #c0dd97; }
     .btn-green:hover { background: #c0dd97; }
     .btn-pdf { background: #eeedfe; color: #534ab7; border-color: #cecbf6; }
     .btn-pdf:hover { background: #cecbf6; }
     .btn-danger { background: var(--bg-danger); color: var(--text-danger); border-color: #f7c1c1; }
     .btn-danger:hover { background: #f7c1c1; }
+    .btn-insta { background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); color: #fff; border: none; }
+    .btn-insta:hover { opacity: .88; }
+    .btn-wa { background: var(--bg-secondary); color: var(--text-secondary); border-color: var(--border); cursor: not-allowed; opacity: .5; }
 
     /* Forms */
     .form-group { margin-bottom: 13px; }
     .form-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; display: block; font-weight: 500; }
     .form-input { width: 100%; padding: 8px 10px; border: 0.5px solid var(--border-med); border-radius: var(--radius-md); font-size: 13px; color: var(--text-primary); background: var(--bg-primary); font-family: var(--font); transition: border-color .12s; }
-    .form-input:focus { outline: none; border-color: #185fa5; box-shadow: 0 0 0 3px rgba(24,95,165,.12); }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+    .form-input:focus { outline: none; border-color: #185fa5; box-shadow: 0 0 0 3px rgba(24,95,165,.1); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
     /* Cards */
     .card { background: var(--bg-primary); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px; }
-    .card-title { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; }
-    .stat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+    .stat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 18px; }
     .stat-card { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 14px 16px; }
     .stat-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 5px; }
     .stat-value { font-size: 22px; font-weight: 600; color: var(--text-primary); }
@@ -115,10 +96,9 @@
     .badge-confirmed { background: var(--bg-success); color: var(--text-success); }
     .badge-pending { background: var(--bg-warning); color: var(--text-warning); }
     .badge-cancelled { background: var(--bg-danger); color: var(--text-danger); }
-    .badge-change { background: var(--bg-info); color: var(--text-info); }
     .badge-paid { background: var(--bg-success); color: var(--text-success); }
     .badge-overdue { background: var(--bg-danger); color: var(--text-danger); }
-    .badge-partial { background: #eeedfe; color: #534ab7; }
+    .badge-bootcamp { background: #eeedfe; color: #534ab7; }
 
     /* Avatars */
     .avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; }
@@ -128,14 +108,9 @@
     .av-coral { background: #faece7; color: #993c1d; }
     .av-amber { background: #faeeda; color: #854f0b; }
 
-    /* Lists */
-    .appt-list { display: flex; flex-direction: column; gap: 7px; }
-    .appt-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 0.5px solid var(--border); border-radius: var(--radius-md); background: var(--bg-primary); transition: background .1s; }
-    .appt-row:hover { background: var(--bg-secondary); }
+    /* Lists & Rows */
     .pay-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 0.5px solid var(--border); border-radius: var(--radius-md); background: var(--bg-primary); transition: background .1s; }
     .pay-row:hover { background: var(--bg-secondary); }
-    .pay-amount { font-size: 15px; font-weight: 600; color: var(--text-primary); }
-    .pay-meta { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
 
     /* Tabs */
     .tabs { display: flex; border-bottom: 0.5px solid var(--border); margin-bottom: 16px; }
@@ -143,52 +118,107 @@
     .tab.active { color: var(--text-info); border-bottom-color: #185fa5; font-weight: 600; }
 
     /* Page header */
-    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
-    .page-title { font-size: 20px; font-weight: 600; color: var(--text-primary); }
-    .page-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+    .ph { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; }
+    .pt { font-size: 20px; font-weight: 600; color: var(--text-primary); }
+    .ps { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
 
-    /* Clients */
-    .client-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 12px; }
+    /* Client grid */
+    .client-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap: 12px; }
     .client-card { background: var(--bg-primary); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 14px; cursor: pointer; transition: all .12s; }
     .client-card:hover { border-color: var(--border-med); background: var(--bg-secondary); }
     .goal-tag { display: inline-flex; padding: 3px 8px; background: var(--bg-info); color: var(--text-info); border-radius: var(--radius-md); font-size: 11px; margin-top: 6px; }
     .metric-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; }
-    .detail-panel { display: grid; grid-template-columns: 1fr 2fr; gap: 18px; }
-
-    /* Groups */
-    .group-card { background: var(--bg-primary); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 14px; }
-    .info-banner { background: var(--bg-info); color: var(--text-info); border-radius: var(--radius-md); padding: 8px 12px; font-size: 12px; margin-bottom: 12px; line-height: 1.5; }
-    .wa-btn { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; background: var(--bg-success); color: var(--text-success); border: 0.5px solid #c0dd97; border-radius: var(--radius-md); font-size: 11px; cursor: pointer; text-decoration: none; font-family: var(--font); }
-    .wa-btn:hover { background: #c0dd97; }
+    .detail-panel { display: grid; grid-template-columns: 230px 1fr; gap: 18px; }
 
     /* Modal */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: flex; align-items: center; justify-content: center; z-index: 200; padding: 16px; }
-    .modal { background: var(--bg-primary); border-radius: var(--radius-lg); padding: 22px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; border: 0.5px solid var(--border); }
+    .modal { background: var(--bg-primary); border-radius: var(--radius-lg); padding: 22px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; border: 0.5px solid var(--border); }
     .modal-title { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; }
 
     /* Toast */
     .save-toast { position: fixed; bottom: 24px; right: 20px; background: var(--bg-success); color: var(--text-success); border: 0.5px solid #c0dd97; border-radius: var(--radius-md); padding: 9px 16px; font-size: 12px; z-index: 300; font-weight: 500; animation: fadeIn .2s ease; }
-    @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: translateY(0); } }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
 
-    /* Empty state */
     .empty-state { text-align: center; padding: 32px; color: var(--text-secondary); font-size: 13px; }
+    .info-banner { background: var(--bg-info); color: var(--text-info); border-radius: var(--radius-md); padding: 8px 12px; font-size: 12px; margin-bottom: 12px; line-height: 1.5; }
+
+    /* Photo upload */
+    .photo-slot { background: var(--bg-secondary); border: 1.5px dashed var(--border-med); border-radius: var(--radius-lg); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; position: relative; transition: all .12s; min-height: 200px; }
+    .photo-slot:hover { border-color: #185fa5; }
+    .photo-slot img { width: 100%; height: 100%; object-fit: cover; }
+    .photo-overlay { position: absolute; inset: 0; background: rgba(0,0,0,.5); display: flex; align-items: center; justify-content: center; opacity: 0; transition: .2s; }
+    .photo-slot:hover .photo-overlay { opacity: 1; }
+
+    /* ── CALENDAR ───────────────────────────────────────────── */
+    .cal-shell { background: var(--bg-primary); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: visible; }
+    .cal-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 0.5px solid var(--border); gap: 10px; flex-wrap: wrap; }
+    .cal-nav { display: flex; align-items: center; gap: 8px; }
+    .cal-nav-btn { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: var(--radius-md); border: 0.5px solid var(--border-med); background: var(--bg-primary); cursor: pointer; font-size: 14px; color: var(--text-primary); }
+    .cal-nav-btn:hover { background: var(--bg-secondary); }
+    .cal-title { font-size: 14px; font-weight: 500; color: var(--text-primary); min-width: 190px; text-align: center; }
+    .cal-vtoggle { display: flex; border: 0.5px solid var(--border-med); border-radius: var(--radius-md); overflow: hidden; }
+    .cal-vbtn { padding: 5px 12px; font-size: 12px; cursor: pointer; color: var(--text-secondary); background: var(--bg-primary); border: none; border-right: 0.5px solid var(--border); font-family: var(--font); }
+    .cal-vbtn:last-child { border-right: none; }
+    .cal-vbtn.active { background: var(--bg-info); color: var(--text-info); font-weight: 600; }
+
+    /* Session block */
+    .s-block { border-radius: 5px; padding: 4px 8px; font-size: 10px; cursor: pointer; margin-bottom: 3px; border-left: 3px solid #534ab7; background: #eeedfe; color: #534ab7; transition: all .1s; line-height: 1.4; }
+    .s-block:hover { background: #cecbf6; }
+
+    /* Tooltip */
+    .s-wrap { position: relative; }
+    .s-tooltip { display: none; position: absolute; left: 0; top: calc(100% + 4px); z-index: 9999; min-width: 260px; max-width: 340px; background: var(--bg-primary); border: 0.5px solid var(--border-med); border-radius: 10px; padding: 14px; pointer-events: none; box-shadow: 0 6px 24px rgba(0,0,0,.18); }
+    .s-wrap:hover .s-tooltip { display: block; }
+    .week-col:nth-last-child(1) .s-tooltip,
+    .week-col:nth-last-child(2) .s-tooltip { left: auto; right: 0; }
+    .month-cell:nth-child(7n) .s-tooltip,
+    .month-cell:nth-child(7n-1) .s-tooltip { left: auto; right: 0; }
+
+    /* Daily view */
+    .day-scroll { overflow-y: auto; max-height: 440px; }
+    .day-grid { display: grid; grid-template-columns: 58px 1fr; }
+    .day-hl { font-size: 10px; color: var(--text-secondary); padding: 4px 8px 0 0; height: 58px; display: flex; align-items: flex-start; justify-content: flex-end; border-right: 0.5px solid var(--border); }
+    .day-slot { height: 58px; border-bottom: 0.5px solid var(--border); padding: 3px 6px; overflow: visible; }
+
+    /* Weekly view */
+    .week-header-grid { display: grid; grid-template-columns: repeat(7,1fr); border-top: 0.5px solid var(--border); }
+    .week-col-header { padding: 8px 6px; font-size: 11px; font-weight: 500; color: var(--text-secondary); border-right: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border); text-align: center; }
+    .week-col-header.tc { color: var(--text-info); background: var(--bg-info); }
+    .day-num { font-size: 18px; font-weight: 600; display: block; line-height: 1.2; }
+    .week-body-grid { display: grid; grid-template-columns: repeat(7,1fr); overflow: visible; }
+    .week-col { border-right: 0.5px solid var(--border); padding: 6px 4px; min-height: 160px; overflow: visible; position: relative; }
+    .week-col:last-child { border-right: none; }
+    .week-col.tc { background: rgba(24,95,165,.04); }
+
+    /* Monthly view */
+    .month-grid { display: grid; grid-template-columns: repeat(7,1fr); overflow: visible; }
+    .month-dow { text-align: center; font-size: 10px; font-weight: 600; color: var(--text-secondary); padding: 8px 2px; border-bottom: 0.5px solid var(--border); border-right: 0.5px solid var(--border); }
+    .month-dow:last-child { border-right: none; }
+    .month-cell { min-height: 72px; padding: 4px; border-bottom: 0.5px solid var(--border); border-right: 0.5px solid var(--border); overflow: visible; position: relative; }
+    .month-cell:nth-child(7n) { border-right: none; }
+    .month-cell.om { background: var(--bg-secondary); }
+    .month-cell.tdc { background: rgba(24,95,165,.05); }
+    .mdn { font-size: 11px; font-weight: 500; color: var(--text-secondary); width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin-bottom: 3px; }
+    .mdn.tn { background: #185fa5; color: #fff; }
+    .mpill { font-size: 9px; border-radius: 3px; padding: 1px 5px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; background: #eeedfe; color: #534ab7; }
+    .mmore { font-size: 9px; color: var(--text-secondary); cursor: pointer; }
 
     /* Mobile nav */
     .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-primary); border-top: 0.5px solid var(--border); padding: 6px 0; z-index: 50; }
     .mob-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 5px 4px; cursor: pointer; font-size: 9px; color: var(--text-secondary); }
     .mob-item.active { color: var(--text-info); }
-    .mob-icon { font-size: 18px; }
+    .mob-icon { font-size: 17px; }
 
-    @media (max-width: 680px) {
+    @media (max-width: 700px) {
       .sidebar { display: none; }
       .main-wrap { margin-left: 0; }
       .mobile-nav { display: flex; }
-      .main { padding: 14px; padding-bottom: 74px; }
+      .main { padding: 14px; padding-bottom: 72px; }
       .stat-grid { grid-template-columns: repeat(2,1fr); }
       .detail-panel { grid-template-columns: 1fr; }
       .form-row { grid-template-columns: 1fr; }
-      .client-grid { grid-template-columns: 1fr; }
-      .page-header { flex-direction: column; align-items: flex-start; }
+      .client-grid { grid-template-columns: repeat(2,1fr); }
+      .ph { flex-direction: column; align-items: flex-start; }
       .storage-bar span:last-child { display: none; }
     }
   </style>
@@ -196,162 +226,223 @@
 <body>
 <div id="app"></div>
 <script>
-const {useState, useEffect, useCallback, useRef} = React;
+'use strict';
+const {useState,useEffect,useCallback,useRef}=React;
 
-const AV_COLORS = ['av-blue','av-teal','av-purple','av-coral','av-amber'];
-const getAv = (name, i) => ({
-  c: AV_COLORS[(i||0) % AV_COLORS.length],
-  init: name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase()
-});
-const fmt = d => d instanceof Date ? d.toISOString().split('T')[0] : d;
-const addDays = (d,n) => { const x=new Date(d); x.setDate(x.getDate()+n); return x; };
-const today = new Date();
-const fmtDate = d => new Date(d+'T00:00').toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'});
-const fmtMoney = n => '$'+parseFloat(n).toFixed(2);
+/* ── CONSTANTS ─────────────────────────────────────────── */
+const AV=['av-blue','av-teal','av-purple','av-coral','av-amber'];
+const getAv=(n,i)=>({c:AV[(i||0)%AV.length],init:n.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase()});
+const fmt=d=>d instanceof Date?d.toISOString().split('T')[0]:d;
+const addD=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
+const today=new Date();
+const fmtDate=d=>new Date(d+'T00:00').toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'});
+const fmtMoney=n=>'$'+parseFloat(n).toFixed(2);
+const WA_ENABLED=false; // set true to enable WhatsApp links
 
-const LS = { clients:'gymro_clients', appts:'gymro_appts', groups:'gymro_groups', payments:'gymro_payments' };
+const GOALS=['Weight Loss','Muscle Gain','Endurance','Flexibility','General Fitness','Athletic Performance'];
+const SLOT_TIMES=['06:00','07:00','08:00','09:00','16:00','17:00','18:00','19:00'];
+const DEF_NAMES=['Early Birds','Rise & Grind','Morning Power','Peak Performance','Afternoon Burn','Rush Hour Fit','Sunset Sweat','Night Owls'];
 
-const INIT_CLIENTS = [
-  {id:1,name:'Sarah Mitchell',phone:'14165550101',email:'sarah@email.com',age:28,weight:65,height:168,goal:'Weight Loss',notes:'Knee injury — avoid high impact',joinDate:'2025-01-10',changeReq:null},
-  {id:2,name:'James Okafor',phone:'14165550202',email:'james@email.com',age:34,weight:88,height:180,goal:'Muscle Gain',notes:'Intermediate lifter',joinDate:'2025-02-03',changeReq:null},
-  {id:3,name:'Priya Sharma',phone:'14165550303',email:'priya@email.com',age:25,weight:57,height:162,goal:'Endurance',notes:'Training for 10K run',joinDate:'2025-03-01',changeReq:'Would like to move Wednesday session to Thursday 7am'},
-  {id:4,name:'Chris Lee',phone:'14165550404',email:'chris@email.com',age:42,weight:79,height:175,goal:'General Fitness',notes:'Busy schedule — mornings preferred',joinDate:'2025-01-22',changeReq:null},
-  {id:5,name:'Amara Nwosu',phone:'14165550505',email:'amara@email.com',age:31,weight:70,height:170,goal:'Flexibility',notes:'Yoga background',joinDate:'2025-02-18',changeReq:null},
-];
-const INIT_APPTS = [
-  {id:1,clientId:1,date:fmt(today),time:'07:00',type:'Strength',status:'confirmed',notes:'Upper body focus'},
-  {id:2,clientId:2,date:fmt(today),time:'09:00',type:'Strength',status:'confirmed',notes:''},
-  {id:3,clientId:3,date:fmt(today),time:'10:30',type:'Cardio',status:'change-requested',notes:'Client requested change'},
-  {id:4,clientId:4,date:fmt(addDays(today,1)),time:'07:00',type:'General Fitness',status:'pending',notes:''},
-  {id:5,clientId:5,date:fmt(addDays(today,1)),time:'08:30',type:'Flexibility',status:'confirmed',notes:''},
-  {id:6,clientId:1,date:fmt(addDays(today,2)),time:'07:00',type:'Cardio',status:'confirmed',notes:''},
-  {id:7,clientId:2,date:fmt(addDays(today,3)),time:'09:00',type:'Strength',status:'pending',notes:''},
-];
-const INIT_GROUPS = [
-  {id:1,name:'Morning Crew',clientIds:[1,2,4],description:'6–10am sessions'},
-  {id:2,name:'Weight Loss Group',clientIds:[1,5],description:'Fat loss focused clients'},
-];
-const INIT_PAYMENTS = [
-  {id:1,clientId:1,amount:200,date:fmt(addDays(today,-5)),desc:'Monthly package — April',status:'paid'},
-  {id:2,clientId:2,amount:200,date:fmt(addDays(today,-3)),desc:'Monthly package — April',status:'paid'},
-  {id:3,clientId:3,amount:200,date:fmt(addDays(today,-1)),desc:'Monthly package — April',status:'pending'},
-  {id:4,clientId:4,amount:150,date:fmt(addDays(today,-10)),desc:'10-session pack',status:'overdue'},
-  {id:5,clientId:5,amount:200,date:fmt(addDays(today,5)),desc:'Monthly package — April',status:'pending'},
-];
+const FN=['Emma','Liam','Sophia','Noah','Ava','Ethan','Isabella','Mason','Mia','Logan','Charlotte','Lucas','Amelia','Oliver','Harper','Elijah','Evelyn','Aiden','Abigail','Jackson','Emily','Sebastian','Elizabeth','Mateo','Sofia','Jack','Avery','Owen','Scarlett','Levi','Victoria','Carter','Grace','Wyatt','Chloe','John','Penelope','Henry','Lily','Dylan','Hannah','Ryan','Layla','Grayson','Zoe','Julian','Nora','Isaiah','Riley','Lincoln','Aria','Jaxon','Aurora','Landon','Savannah','Hunter','Paisley','Thomas','Nova','Camden','Stella','Robert','Violet','Adrian','Luna','Connor','Cora','Eli','Madeline','Brody','Ellie','Aaron','Kinsley','Jace','Brooklyn','Jordan','Maya','Angel','Bella','Easton','Willow','Kayden','Clara','Bentley','Quinn','Nolan','Ruby','Ryder','Hadley','Xavier'];
+const LN=['Wilson','Chen','Patel','Johnson','Martinez','Brown','Garcia','Davis','Rodriguez','Miller','Moore','Taylor','Anderson','Thomas','Jackson','White','Harris','Martin','Thompson','Lee','Perez','Walker','Hall','Allen','Young','Hernandez','King','Wright','Lopez','Hill','Scott','Green','Adams','Baker','Gonzalez','Nelson','Carter','Mitchell','Roberts','Turner','Phillips','Campbell','Parker','Evans','Edwards','Collins','Stewart','Sanchez','Morris','Rogers','Reed','Cook','Morgan','Bell','Murphy','Bailey','Rivera','Cooper','Richardson','Cox','Howard','Ward','Torres','Peterson','Gray','Ramirez','James','Watson','Brooks','Kelly','Sanders','Price','Bennett','Wood','Barnes','Ross','Henderson','Coleman','Jenkins','Perry','Powell','Long','Patterson','Hughes','Flores','Washington'];
 
-const loadLS = (key, fallback) => { try { const v=localStorage.getItem(key); return v?JSON.parse(v):fallback; } catch { return fallback; } };
+function sr(seed){let s=seed;return()=>{s=(s*1664525+1013904223)&0xffffffff;return(s>>>0)/4294967295;};}
 
-function usePersistedState(key, init) {
-  const [state, setState] = useState(() => loadLS(key, init));
-  const first = useRef(true);
-  useEffect(() => {
-    if (first.current) { first.current=false; return; }
-    try { localStorage.setItem(key, JSON.stringify(state)); } catch {}
-  }, [state, key]);
-  return [state, setState];
+function genClients(){
+  const r=sr(42);
+  return FN.map((fn,i)=>({
+    id:i+1, name:fn+' '+LN[i],
+    phone:'1416555'+String(1000+i).slice(-4),
+    email:fn.toLowerCase()+'.'+LN[i].toLowerCase()+'@email.com',
+    age:22+Math.round(r()*30), weight:52+Math.round(r()*48), height:158+Math.round(r()*32),
+    goal:GOALS[i%6], notes:'',
+    joinDate:fmt(addD(today,-30-Math.round(r()*335))),
+    changeReq:null,
+  }));
 }
 
-/* ─── APP ──────────────────────────────────────────────── */
-function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [view, setView] = useState('dashboard');
-  const [clients,  setClients]  = usePersistedState(LS.clients,  INIT_CLIENTS);
-  const [appts,    setAppts]    = usePersistedState(LS.appts,    INIT_APPTS);
-  const [groups,   setGroups]   = usePersistedState(LS.groups,   INIT_GROUPS);
-  const [payments, setPayments] = usePersistedState(LS.payments, INIT_PAYMENTS);
-  const [modal, setModal] = useState(null);
-  const [selClient, setSelClient] = useState(null);
-  const [toast, setToast] = useState(null);
-  const toastTimer = useRef(null);
+function genSessions(clients){
+  const ss=Math.ceil(clients.length/8);
+  const sc=SLOT_TIMES.map((_,si)=>clients.slice(si*ss,Math.min((si+1)*ss,clients.length)).map(c=>c.id));
+  const out=[];let sid=1;
+  for(let d=-21;d<=35;d++){
+    const date=addD(today,d);const dow=date.getDay();
+    if(dow===0||dow===6)continue;
+    SLOT_TIMES.forEach((time,si)=>{
+      out.push({id:sid++,name:DEF_NAMES[si],clientIds:sc[si],date:fmt(date),time,type:'Bootcamp',status:'confirmed',isGroup:true});
+    });
+  }
+  return out;
+}
 
-  const showToast = useCallback(msg => {
-    setToast(msg);
-    clearTimeout(toastTimer.current);
-    toastTimer.current = setTimeout(() => setToast(null), 2200);
-  }, []);
+const INIT_CLIENTS=genClients();
+const INIT_SESSIONS=genSessions(INIT_CLIENTS);
+const INIT_PAYMENTS=INIT_CLIENTS.slice(0,30).map((cl,i)=>({
+  id:i+1, clientId:cl.id, amount:180+Math.round((i%3)*20),
+  date:fmt(addD(today,-(i%15))), desc:'Monthly bootcamp — Apr',
+  status:i%5===4?'overdue':i%3===2?'pending':'paid',
+}));
 
-  const ws = (setter, label) => (...args) => { setter(...args); showToast(label+' saved'); };
+const LS={clients:'gymro_clients',sessions:'gymro_sessions',payments:'gymro_payments',photos:'gymro_photos',snames:'gymro_snames'};
 
-  if (!loggedIn) return React.createElement(LoginScreen, {onLogin: () => setLoggedIn(true)});
+/* ── localStorage hook ─────────────────────────────────── */
+const loadLS=(k,fb)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):fb;}catch{return fb;}};
+function usePS(key,init){
+  const [state,setState]=useState(()=>loadLS(key,init));
+  const first=useRef(true);
+  useEffect(()=>{
+    if(first.current){first.current=false;return;}
+    try{localStorage.setItem(key,JSON.stringify(state));}catch{}
+  },[state,key]);
+  return [state,setState];
+}
 
-  const todayAppts   = appts.filter(a => a.date===fmt(today)).sort((a,b)=>a.time.localeCompare(b.time));
-  const upcomingAppts = appts.filter(a => a.date>fmt(today)).sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time));
-  const changeReqs   = clients.filter(c => c.changeReq);
-  const getClient    = id => clients.find(c => c.id===id);
-  const pendingPayCount = payments.filter(p => p.status==='pending'||p.status==='overdue').length;
+/* ── WhatsApp button (disabled until WA_ENABLED = true) ── */
+function WaBtn({phone,label='WhatsApp',msg=''}){
+  if(!WA_ENABLED)return React.createElement('button',{className:'btn btn-sm btn-wa',disabled:true,title:'WhatsApp — coming soon'},label+' (soon)');
+  return React.createElement('a',{className:'btn btn-sm btn-green',onClick:()=>window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,'_blank')},label);
+}
 
-  const handleReset = () => {
-    if (!confirm('Reset ALL data to demo defaults? This cannot be undone.')) return;
-    Object.values(LS).forEach(k => localStorage.removeItem(k));
-    setClients(INIT_CLIENTS); setAppts(INIT_APPTS);
-    setGroups(INIT_GROUPS);   setPayments(INIT_PAYMENTS);
+/* ── Progress card generator (Canvas) ─────────────────── */
+async function genProgressCard(cl,before,after){
+  const c=document.createElement('canvas');c.width=1080;c.height=1080;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='#111111';ctx.fillRect(0,0,1080,1080);
+  ctx.fillStyle='#ffffff';ctx.font='bold 52px Arial';ctx.textAlign='center';
+  ctx.fillText('TRANSFORMATION',540,72);
+  ctx.fillStyle='#888888';ctx.font='22px Arial';
+  ctx.fillText(cl.name.toUpperCase()+' · '+cl.goal.toUpperCase(),540,108);
+  ctx.fillStyle='#534AB7';ctx.fillRect(200,120,680,3);
+  const drawImg=(src,x,y,w,h,label)=>new Promise(resolve=>{
+    ctx.fillStyle='rgba(0,0,0,0.65)';
+    const roundRect=(cx,cy,cw,ch,r)=>{ctx.beginPath();ctx.roundRect(cx,cy,cw,ch,r);};
+    if(src){
+      const img=new Image();
+      img.onload=()=>{ctx.save();roundRect(x,y,w,h,12);ctx.clip();ctx.drawImage(img,x,y,w,h);ctx.restore();resolve();};
+      img.onerror=resolve;img.src=src;
+    }else{
+      ctx.fillStyle='#2a2a2a';roundRect(x,y,w,h,12);ctx.fill();
+      ctx.fillStyle='#555';ctx.font='28px Arial';ctx.textAlign='center';
+      ctx.fillText('No Photo',x+w/2,y+h/2);resolve();
+    }
+    ctx.fillStyle='rgba(0,0,0,0.7)';ctx.fillRect(x,y+h-50,w,50);
+    ctx.fillStyle='#fff';ctx.font='bold 30px Arial';ctx.textAlign='center';
+    ctx.fillText(label,x+w/2,y+h-16);
+  });
+  await drawImg(before,60,140,460,700,'BEFORE');
+  await drawImg(after,560,140,460,700,'AFTER');
+  ctx.fillStyle='#ffffff';ctx.font='bold 36px Arial';ctx.textAlign='center';ctx.fillText(cl.name,540,902);
+  ctx.fillStyle='#888';ctx.font='22px Arial';ctx.fillText('Goal: '+cl.goal+' · '+new Date().getFullYear(),540,940);
+  ctx.fillStyle='#534AB7';ctx.font='bold 20px Arial';ctx.fillText('GymPro · Powered by Your Trainer',540,990);
+  return c.toDataURL('image/jpeg',0.92);
+}
+
+async function shareCard(dataUrl,name){
+  try{
+    const blob=await fetch(dataUrl).then(r=>r.blob());
+    const file=new File([blob],'transformation.jpg',{type:'image/jpeg'});
+    if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+      await navigator.share({files:[file],title:name+' Transformation',text:'Amazing transformation! #GymPro #Bootcamp'});
+    }else{
+      const a=document.createElement('a');a.href=dataUrl;a.download=name.replace(/ /g,'-')+'-transformation.jpg';a.click();
+    }
+  }catch(err){console.warn('Share:',err);}
+}
+
+/* ── APP ───────────────────────────────────────────────── */
+function App(){
+  const [loggedIn,setLoggedIn]=useState(false);
+  const [view,setView]=useState('dashboard');
+  const [clients,setClients]=usePS(LS.clients,INIT_CLIENTS);
+  const [sessions,setSessions]=usePS(LS.sessions,INIT_SESSIONS);
+  const [payments,setPayments]=usePS(LS.payments,INIT_PAYMENTS);
+  const [photos,setPhotos]=usePS(LS.photos,{});
+  const [snames,setSnames]=usePS(LS.snames,{});
+  const [modal,setModal]=useState(null);
+  const [selClient,setSelClient]=useState(null);
+  const [toast,setToast]=useState(null);
+  const tmr=useRef(null);
+
+  const showToast=useCallback(m=>{setToast(m);clearTimeout(tmr.current);tmr.current=setTimeout(()=>setToast(null),2400);},[]);
+  const ws=(s,l)=>(...a)=>{s(...a);showToast(l+' saved');};
+
+  if(!loggedIn)return React.createElement(LoginScreen,{onLogin:()=>setLoggedIn(true)});
+
+  const getClient=id=>clients.find(c=>c.id===id);
+  const getSessionName=s=>snames[s.id]||s.name;
+  const renameSession=(id,name)=>setSnames(sn=>({...sn,[id]:name}));
+  const pendingPay=payments.filter(p=>p.status==='pending'||p.status==='overdue').length;
+
+  const handleReset=()=>{
+    if(!confirm('Reset ALL data to demo defaults?'))return;
+    Object.values(LS).forEach(k=>localStorage.removeItem(k));
+    setClients(INIT_CLIENTS);setSessions(INIT_SESSIONS);setPayments(INIT_PAYMENTS);setPhotos({});setSnames({});
     showToast('Reset to demo data');
   };
 
-  const e = React.createElement;
-  return e('div', {className:'app-shell'},
-    e(Sidebar, {view,setView,changeReqs,pendingPayCount,onLogout:()=>setLoggedIn(false),onReset:handleReset}),
-    e('div', {className:'main-wrap'},
-      e(StorageBar, {clients,appts,payments,groups}),
-      e('div', {className:'main'},
-        view==='dashboard'   && e(Dashboard,    {todayAppts,upcomingAppts,clients,changeReqs,payments,getClient,setView,setModal,setClients:ws(setClients,'Change request'),appts}),
-        view==='appointments'&& e(Appointments, {appts,setAppts:ws(setAppts,'Appointment'),clients,getClient,setModal}),
-        view==='clients'     && e(Clients,      {clients,setClients:ws(setClients,'Client'),selClient,setSelClient,appts,payments,setPayments:ws(setPayments,'Payment')}),
-        view==='groups'      && e(Groups,       {groups,setGroups:ws(setGroups,'Group'),clients}),
-        view==='payments'    && e(Payments,     {payments,setPayments:ws(setPayments,'Payment'),clients,getClient}),
+  const e=React.createElement;
+  return e('div',{className:'app-shell'},
+    e(Sidebar,{view,setView,pendingPay,onLogout:()=>setLoggedIn(false),onReset:handleReset}),
+    e('div',{className:'main-wrap'},
+      e(StorageBar,{clients,sessions,payments}),
+      e('div',{className:'main'},
+        view==='dashboard' &&e(Dashboard,   {sessions,clients,payments,getClient,getSessionName,renameSession,setModal}),
+        view==='schedule'  &&e(ScheduleView,{sessions,clients,getClient,getSessionName,renameSession}),
+        view==='clients'   &&e(ClientsView, {clients,setClients:ws(setClients,'Client'),selClient,setSelClient,sessions,payments,photos,setPhotos:ws(setPhotos,'Photos'),getSessionName}),
+        view==='payments'  &&e(PaymentsView,{payments,setPayments:ws(setPayments,'Payment'),clients,getClient}),
       )
     ),
-    modal && e(ModalRouter, {modal,setModal,clients,setClients:ws(setClients,'Client'),appts,setAppts:ws(setAppts,'Appointment'),getClient}),
-    toast && e('div', {className:'save-toast'}, '✓ '+toast),
-    e(MobileNav, {view, setView, pendingPayCount})
+    modal&&e(ModalRouter,{modal,setModal,clients,sessions,setSessions:ws(setSessions,'Session'),getSessionName,renameSession,showToast}),
+    toast&&e('div',{className:'save-toast'},'✓ '+toast),
+    e(MobileNav,{view,setView,pendingPay})
   );
 }
 
-/* ─── STORAGE BAR ───────────────────────────────────────── */
-function StorageBar({clients,appts,payments,groups}) {
-  const kb = (JSON.stringify({clients,appts,payments,groups}).length/1024).toFixed(1);
-  const t  = new Date().toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'});
-  return React.createElement('div',{className:'storage-bar'},
-    React.createElement('div',{className:'storage-dot'}),
+/* ── STORAGE BAR ───────────────────────────────────────── */
+function StorageBar({clients,sessions,payments}){
+  const kb=(JSON.stringify({clients,sessions,payments}).length/1024).toFixed(1);
+  const t=new Date().toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'});
+  const e=React.createElement;
+  return e('div',{className:'storage-bar'},
+    e('div',{className:'storage-dot'}),
     'Saved to localStorage · '+kb+' KB · last saved '+t,
-    React.createElement('span',{style:{marginLeft:'auto',fontSize:10,opacity:.55}},'Data persists on this device across reloads')
+    e('span',{style:{marginLeft:'auto',fontSize:10,opacity:.5}},'Data persists on this device across reloads')
   );
 }
 
-/* ─── LOGIN ─────────────────────────────────────────────── */
-function LoginScreen({onLogin}) {
-  const [user,setUser]=useState(''); const [pass,setPass]=useState(''); const [err,setErr]=useState('');
-  const login = () => { if(user==='trainer'&&pass==='gym123') onLogin(); else setErr('Invalid username or password.'); };
-  const e = React.createElement;
+/* ── LOGIN ─────────────────────────────────────────────── */
+function LoginScreen({onLogin}){
+  const [u,setU]=useState('');const [p,setP]=useState('');const [err,setErr]=useState('');
+  const login=()=>{if(u==='trainer'&&p==='gym123')onLogin();else setErr('Invalid username or password.');};
+  const e=React.createElement;
   return e('div',{className:'login-wrap'},
     e('div',{className:'login-card'},
-      e('div',{className:'login-logo'}, e('h1',null,'GymPro'), e('p',null,'Trainer Management Portal')),
+      e('div',{className:'login-logo'},e('h1',null,'GymPro'),e('p',null,'Bootcamp Trainer Portal')),
       e('div',{className:'login-hint'},'Demo credentials — username: trainer · password: gym123'),
-      err && e('div',{className:'login-err'},err),
-      e('div',{className:'form-group'}, e('label',{className:'form-label'},'Username'), e('input',{className:'form-input',value:user,onChange:ev=>setUser(ev.target.value),onKeyDown:ev=>ev.key==='Enter'&&login()})),
-      e('div',{className:'form-group'}, e('label',{className:'form-label'},'Password'), e('input',{className:'form-input',type:'password',value:pass,onChange:ev=>setPass(ev.target.value),onKeyDown:ev=>ev.key==='Enter'&&login()})),
+      err&&e('div',{className:'login-err'},err),
+      e('div',{className:'form-group'},e('label',{className:'form-label'},'Username'),e('input',{className:'form-input',value:u,onChange:ev=>setU(ev.target.value),onKeyDown:ev=>ev.key==='Enter'&&login()})),
+      e('div',{className:'form-group'},e('label',{className:'form-label'},'Password'),e('input',{className:'form-input',type:'password',value:p,onChange:ev=>setP(ev.target.value),onKeyDown:ev=>ev.key==='Enter'&&login()})),
       e('button',{className:'btn btn-primary',style:{width:'100%',justifyContent:'center',padding:'10px'},onClick:login},'Sign In')
     )
   );
 }
 
-/* ─── SIDEBAR ───────────────────────────────────────────── */
-function Sidebar({view,setView,changeReqs,pendingPayCount,onLogout,onReset}) {
-  const items = [
-    {id:'dashboard',   icon:'◼', label:'Dashboard'},
-    {id:'appointments',icon:'◷', label:'Appointments', badge:changeReqs.length||null},
-    {id:'clients',     icon:'◉', label:'Clients'},
-    {id:'groups',      icon:'◈', label:'Groups'},
-    {id:'payments',    icon:'◎', label:'Payments', badge:pendingPayCount||null},
+/* ── SIDEBAR ───────────────────────────────────────────── */
+function Sidebar({view,setView,pendingPay,onLogout,onReset}){
+  const items=[
+    {id:'dashboard',icon:'◼',label:'Dashboard'},
+    {id:'schedule',icon:'◷',label:'Schedule'},
+    {id:'clients',icon:'◉',label:'Clients (90)'},
+    {id:'payments',icon:'◎',label:'Payments',badge:pendingPay||null},
   ];
-  const e = React.createElement;
+  const e=React.createElement;
   return e('div',{className:'sidebar'},
-    e('div',{className:'sidebar-logo'}, e('h1',null,'GymPro'), e('span',null,'Trainer Dashboard')),
-    e('div',{className:'section-label'},'Menu'),
+    e('div',{className:'sidebar-logo'},e('h1',null,'GymPro'),e('span',null,'Bootcamp Trainer')),
+    e('div',{className:'sec-label'},'Menu'),
     e('div',{className:'sidebar-nav'},
-      items.map(i => e('div',{key:i.id,className:`nav-item${view===i.id?' active':''}`,onClick:()=>setView(i.id)},
-        e('span',{style:{fontSize:14}},i.icon), i.label,
-        i.badge && e('span',{className:'nav-badge'},i.badge)
+      items.map(i=>e('div',{key:i.id,className:`nav-item${view===i.id?' active':''}`,onClick:()=>setView(i.id)},
+        e('span',{style:{fontSize:14}},i.icon),i.label,
+        i.badge&&e('span',{className:'nav-badge'},i.badge)
       ))
     ),
     e('div',{className:'sidebar-footer'},
@@ -361,122 +452,244 @@ function Sidebar({view,setView,changeReqs,pendingPayCount,onLogout,onReset}) {
   );
 }
 
-/* ─── MOBILE NAV ────────────────────────────────────────── */
-function MobileNav({view,setView}) {
-  const items=[{id:'dashboard',icon:'◼',label:'Home'},{id:'appointments',icon:'◷',label:'Schedule'},{id:'clients',icon:'◉',label:'Clients'},{id:'groups',icon:'◈',label:'Groups'},{id:'payments',icon:'◎',label:'Pay'}];
+/* ── MOBILE NAV ────────────────────────────────────────── */
+function MobileNav({view,setView}){
+  const items=[{id:'dashboard',icon:'◼',l:'Home'},{id:'schedule',icon:'◷',l:'Schedule'},{id:'clients',icon:'◉',l:'Clients'},{id:'payments',icon:'◎',l:'Pay'}];
   return React.createElement('div',{className:'mobile-nav'},
     items.map(i=>React.createElement('div',{key:i.id,className:`mob-item${view===i.id?' active':''}`,onClick:()=>setView(i.id)},
-      React.createElement('div',{className:'mob-icon'},i.icon), i.label
+      React.createElement('div',{className:'mob-icon'},i.icon),i.l
     ))
   );
 }
 
-/* ─── DASHBOARD ─────────────────────────────────────────── */
-function Dashboard({todayAppts,upcomingAppts,clients,changeReqs,payments,getClient,setView,setModal,setClients,appts}) {
-  const earned  = payments.filter(p=>p.status==='paid').reduce((s,p)=>s+p.amount,0);
-  const pending = payments.filter(p=>p.status==='pending').reduce((s,p)=>s+p.amount,0);
-  const overdue = payments.filter(p=>p.status==='overdue');
-  const e = React.createElement;
-  return e('div',null,
-    e('div',{className:'page-header'},
-      e('div',null, e('div',{className:'page-title'},'Good morning, Coach'), e('div',{className:'page-sub'},new Date().toLocaleDateString('en-CA',{weekday:'long',year:'numeric',month:'long',day:'numeric'}))),
-      e('button',{className:'btn btn-primary',onClick:()=>setModal({type:'book'})},'+ Book Appointment')
-    ),
-    e('div',{className:'stat-grid'},
-      e('div',{className:'stat-card'}, e('div',{className:'stat-label'},"Today's sessions"), e('div',{className:'stat-value'},todayAppts.length), e('div',{className:'stat-sub'},'scheduled')),
-      e('div',{className:'stat-card'}, e('div',{className:'stat-label'},'Active clients'),   e('div',{className:'stat-value'},clients.length), e('div',{className:'stat-sub'},'members')),
-      e('div',{className:'stat-card'}, e('div',{className:'stat-label'},'Revenue (paid)'),   e('div',{className:'stat-value'},fmtMoney(earned)), e('div',{className:'stat-sub'},fmtMoney(pending)+' pending')),
-      e('div',{className:'stat-card'}, e('div',{className:'stat-label'},'Change requests'),  e('div',{className:'stat-value',style:{color:changeReqs.length?'#BA7517':'inherit'}},changeReqs.length), e('div',{className:'stat-sub'},'from clients'))
-    ),
-    overdue.length>0 && e('div',{className:'card',style:{marginBottom:14,borderColor:'#F7C1C1'}},
-      e('div',{className:'card-title',style:{color:'#A32D2D'}},overdue.length+' overdue payment'+(overdue.length>1?'s':'')),
-      overdue.map(p=>{const cl=getClient(p.clientId); return cl&&e('div',{key:p.id,style:{display:'flex',justifyContent:'space-between',fontSize:13,padding:'5px 0',borderBottom:'0.5px solid var(--border)'}},e('span',null,cl.name+' — '+p.desc),e('span',{style:{fontWeight:600,color:'#A32D2D'}},fmtMoney(p.amount)));})
-    ),
-    changeReqs.length>0 && e('div',{className:'card',style:{marginBottom:14,borderColor:'#FAC775'}},
-      e('div',{className:'card-title'},changeReqs.length+' change request'+(changeReqs.length>1?'s':'')),
-      changeReqs.map(c=>e('div',{key:c.id,style:{padding:'7px 0',borderBottom:'0.5px solid var(--border)',fontSize:13}},
-        e('span',{style:{fontWeight:600}},c.name),': ',e('span',{style:{color:'var(--text-secondary)'}},c.changeReq),
-        e('div',{style:{display:'flex',gap:8,marginTop:5}},
-          e('button',{className:'btn btn-sm',onClick:()=>setModal({type:'reschedule',clientId:c.id})},'Reschedule'),
-          e('button',{className:'btn btn-sm',style:{color:'var(--text-secondary)'},onClick:()=>setClients(cs=>cs.map(x=>x.id===c.id?{...x,changeReq:null}:x))},'Dismiss')
-        )
-      ))
-    ),
-    e('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}},
-      e('div',{className:'card'},
-        e('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}, e('div',{className:'card-title',style:{margin:0}},"Today's Schedule"), e('button',{className:'btn btn-sm',onClick:()=>setView('appointments')},'All')),
-        todayAppts.length===0 ? e('div',{className:'empty-state'},'No sessions today') :
-        e('div',{className:'appt-list'}, todayAppts.map(a=>{const cl=getClient(a.clientId);if(!cl)return null;const av=getAv(cl.name,cl.id);return e('div',{key:a.id,className:'appt-row'},e('div',{className:`avatar ${av.c}`},av.init),e('div',{style:{flex:1}},e('div',{style:{fontSize:13,fontWeight:600}},cl.name),e('div',{style:{fontSize:11,color:'var(--text-secondary)'}},a.type)),e('div',{style:{fontSize:12,color:'var(--text-secondary)',minWidth:48}},a.time),e('span',{className:`badge badge-${a.status==='change-requested'?'change':a.status}`},a.status==='change-requested'?'change':a.status));}))
+/* ── SESSION BLOCK (tooltip + rename) ─────────────────── */
+function SessionBlock({session,clients,getSessionName,renameSession}){
+  const [editing,setEditing]=useState(false);
+  const [editVal,setEditVal]=useState('');
+  const clientList=session.clientIds.map(id=>clients.find(c=>c.id===id)).filter(Boolean);
+  const name=getSessionName(session);
+  const e=React.createElement;
+  if(editing){
+    return e('div',{className:'s-block',style:{display:'flex',gap:4,alignItems:'center'}},
+      e('input',{style:{flex:1,fontSize:10,background:'transparent',border:'none',outline:'none',color:'inherit',fontFamily:'var(--font)'},value:editVal,onChange:ev=>setEditVal(ev.target.value),onKeyDown:ev=>{if(ev.key==='Enter'){if(editVal.trim())renameSession(session.id,editVal.trim());setEditing(false);}if(ev.key==='Escape')setEditing(false);},autoFocus:true}),
+      e('span',{onClick:()=>{if(editVal.trim())renameSession(session.id,editVal.trim());setEditing(false);},style:{cursor:'pointer',fontSize:10}},'✓')
+    );
+  }
+  return e('div',{className:'s-wrap'},
+    e('div',{className:'s-block'},
+      e('div',{style:{display:'flex',alignItems:'center',gap:3}},
+        e('span',{style:{fontWeight:600,flex:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}},name),
+        e('span',{onClick:ev=>{ev.stopPropagation();setEditVal(name);setEditing(true);},style:{cursor:'pointer',opacity:.6,fontSize:10,flexShrink:0},title:'Rename class'},'✎')
       ),
-      e('div',{className:'card'},
-        e('div',{className:'card-title'},'Upcoming'),
-        upcomingAppts.length===0 ? e('div',{className:'empty-state'},'No upcoming') :
-        e('div',{className:'appt-list'}, upcomingAppts.slice(0,4).map(a=>{const cl=getClient(a.clientId);if(!cl)return null;const av=getAv(cl.name,cl.id);return e('div',{key:a.id,className:'appt-row'},e('div',{className:`avatar ${av.c}`},av.init),e('div',{style:{flex:1}},e('div',{style:{fontSize:13,fontWeight:600}},cl.name),e('div',{style:{fontSize:11,color:'var(--text-secondary)'}},fmtDate(a.date)+' · '+a.time)),e('span',{className:`badge badge-${a.status}`},a.status));}))
+      e('div',{style:{fontSize:9,marginTop:1,opacity:.8}},session.time+' · '+clientList.length+' clients')
+    ),
+    e('div',{className:'s-tooltip'},
+      e('div',{style:{fontWeight:600,fontSize:12,marginBottom:4,color:'var(--text-primary)'}},name),
+      e('div',{style:{fontSize:11,color:'var(--text-secondary)',marginBottom:10}},session.date+' · '+session.time+' · Bootcamp · '+clientList.length+' clients'),
+      e('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'4px 14px'}},
+        clientList.map(c=>e('div',{key:c.id,style:{fontSize:11,color:'var(--text-primary)',padding:'2px 0',borderBottom:'0.5px solid var(--border)'}},c.name))
       )
     )
   );
 }
 
-/* ─── PDF HELPERS ───────────────────────────────────────── */
-function exportApptPDF(appts,clients){const{jsPDF}=window.jspdf;const doc=new jsPDF();doc.setFontSize(16);doc.setFont('helvetica','bold');doc.text('GymPro — Appointment Schedule',14,18);doc.setFontSize(10);doc.setFont('helvetica','normal');doc.text('Exported: '+new Date().toLocaleDateString('en-CA'),14,26);doc.setDrawColor(200);doc.line(14,30,196,30);let y=38;const sorted=[...appts].sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time));let last='';sorted.forEach(a=>{const cl=clients.find(c=>c.id===a.clientId);if(!cl)return;if(a.date!==last){if(y>260){doc.addPage();y=20;}doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text(fmtDate(a.date),14,y);y+=6;last=a.date;doc.setFont('helvetica','normal');doc.setFontSize(10);}if(y>270){doc.addPage();y=20;}doc.text(`  ${a.time}  |  ${cl.name}  |  ${a.type}  |  ${a.status}`,14,y);y+=6;});doc.save('gymro-appointments.pdf');}
-function exportClientPDF(cl,appts,payments){const{jsPDF}=window.jspdf;const doc=new jsPDF();const bmi=cl.weight&&cl.height?(cl.weight/((cl.height/100)**2)).toFixed(1):'-';doc.setFontSize(18);doc.setFont('helvetica','bold');doc.text('GymPro — Client Profile',14,18);doc.setFontSize(12);doc.setFont('helvetica','normal');doc.text(cl.name,14,28);doc.setFontSize(10);doc.setDrawColor(200);doc.line(14,32,196,32);let y=40;[['Email',cl.email],['Phone',cl.phone],['Age',cl.age+' yrs'],['Weight',cl.weight+' kg'],['Height',cl.height+' cm'],['BMI',bmi],['Goal',cl.goal],['Joined',cl.joinDate],['Notes',cl.notes||'-']].forEach(([k,v])=>{doc.setFont('helvetica','bold');doc.text(k+':',14,y);doc.setFont('helvetica','normal');doc.text(String(v),60,y);y+=7;});y+=4;doc.setFont('helvetica','bold');doc.text('Appointments',14,y);y+=6;doc.setFont('helvetica','normal');appts.filter(a=>a.clientId===cl.id).sort((a,b)=>b.date.localeCompare(a.date)).forEach(a=>{if(y>270){doc.addPage();y=20;}doc.text(`${fmtDate(a.date)} ${a.time}  ${a.type}  [${a.status}]`,14,y);y+=6;});y+=4;doc.setFont('helvetica','bold');doc.text('Payments',14,y);y+=6;doc.setFont('helvetica','normal');payments.filter(p=>p.clientId===cl.id).forEach(p=>{if(y>270){doc.addPage();y=20;}doc.text(`${p.date}  ${p.desc}  $${p.amount}  [${p.status}]`,14,y);y+=6;});doc.save(`gymro-${cl.name.toLowerCase().replace(/ /g,'-')}.pdf`);}
-function exportPaymentsPDF(payments,clients){const{jsPDF}=window.jspdf;const doc=new jsPDF();doc.setFontSize(16);doc.setFont('helvetica','bold');doc.text('GymPro — Payment Report',14,18);doc.setFontSize(10);doc.setFont('helvetica','normal');doc.text('Exported: '+new Date().toLocaleDateString('en-CA'),14,26);const total=payments.reduce((s,p)=>s+p.amount,0);const paid=payments.filter(p=>p.status==='paid').reduce((s,p)=>s+p.amount,0);const pend=payments.filter(p=>p.status==='pending').reduce((s,p)=>s+p.amount,0);const over=payments.filter(p=>p.status==='overdue').reduce((s,p)=>s+p.amount,0);doc.setDrawColor(200);doc.line(14,30,196,30);let y=38;doc.setFont('helvetica','bold');doc.text(`Total: $${total.toFixed(2)}   Paid: $${paid.toFixed(2)}   Pending: $${pend.toFixed(2)}   Overdue: $${over.toFixed(2)}`,14,y);y+=10;doc.line(14,y,196,y);y+=6;payments.forEach(p=>{const cl=clients.find(c=>c.id===p.clientId);if(!cl)return;if(y>270){doc.addPage();y=20;}doc.setFont('helvetica','bold');doc.text(cl.name,14,y);doc.setFont('helvetica','normal');doc.text(p.date,70,y);doc.text(p.desc,100,y);doc.text('$'+p.amount.toFixed(2),170,y);doc.text(p.status,185,y);y+=7;});doc.save('gymro-payments.pdf');}
-
-/* ─── APPOINTMENTS ──────────────────────────────────────── */
-function Appointments({appts,setAppts,clients,getClient,setModal}){
-  const [tab,setTab]=useState('upcoming');const [filter,setFilter]=useState('');
-  const todayStr=fmt(today);
-  const filtered=[...appts].sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time)).filter(a=>{
-    const cl=getClient(a.clientId);const mn=!filter||cl?.name.toLowerCase().includes(filter.toLowerCase());
-    if(tab==='today')return a.date===todayStr&&mn;if(tab==='upcoming')return a.date>=todayStr&&mn;
-    if(tab==='pending')return a.status==='pending'&&mn;if(tab==='change')return a.status==='change-requested'&&mn;return mn;
-  });
+/* ── DASHBOARD ─────────────────────────────────────────── */
+function Dashboard({sessions,clients,payments,getClient,getSessionName,renameSession,setModal}){
+  const [calView,setCalView]=useState('weekly');
+  const [refDate,setRefDate]=useState(new Date(today));
+  const earned=payments.filter(p=>p.status==='paid').reduce((s,p)=>s+p.amount,0);
+  const overdue=payments.filter(p=>p.status==='overdue');
+  const todaySess=sessions.filter(s=>s.date===fmt(today));
+  const totalClientsToday=new Set(todaySess.flatMap(s=>s.clientIds)).size;
+  const move=n=>{const d=new Date(refDate);if(calView==='daily')d.setDate(d.getDate()+n);else if(calView==='weekly')d.setDate(d.getDate()+n*7);else d.setMonth(d.getMonth()+n);setRefDate(d);};
+  const calTitle=()=>{
+    if(calView==='daily')return refDate.toLocaleDateString('en-CA',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+    if(calView==='weekly'){const m=new Date(refDate);m.setDate(m.getDate()-((m.getDay()+6)%7));const s=new Date(m);s.setDate(s.getDate()+6);return m.toLocaleDateString('en-CA',{month:'short',day:'numeric'})+' – '+s.toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'});}
+    return refDate.toLocaleDateString('en-CA',{month:'long',year:'numeric'});
+  };
   const e=React.createElement;
   return e('div',null,
-    e('div',{className:'page-header'},
-      e('div',null,e('div',{className:'page-title'},'Appointments'),e('div',{className:'page-sub'},'Manage all bookings')),
-      e('div',{style:{display:'flex',gap:8}},e('button',{className:'btn btn-pdf',onClick:()=>exportApptPDF(appts,clients)},'⤓ Export PDF'),e('button',{className:'btn btn-primary',onClick:()=>setModal({type:'book'})},'+ Book'))
+    e('div',{className:'ph'},
+      e('div',null,e('div',{className:'pt'},'Good morning, Coach'),e('div',{className:'ps'},new Date().toLocaleDateString('en-CA',{weekday:'long',year:'numeric',month:'long',day:'numeric'}))),
+      e('button',{className:'btn btn-primary',onClick:()=>setModal({type:'addSession'})},'+ Add Session')
     ),
-    e('input',{className:'form-input',placeholder:'Search client...',value:filter,onChange:ev=>setFilter(ev.target.value),style:{maxWidth:200,marginBottom:14}}),
-    e('div',{className:'tabs'},['upcoming','today','pending','change'].map(t=>e('div',{key:t,className:`tab${tab===t?' active':''}`,onClick:()=>setTab(t)},t==='change'?'Change Requests':t[0].toUpperCase()+t.slice(1)))),
-    filtered.length===0?e('div',{className:'empty-state'},'No appointments found'):
-    e('div',{className:'appt-list'},filtered.map(a=>{
-      const cl=getClient(a.clientId);if(!cl)return null;const av=getAv(cl.name,cl.id);
-      return e('div',{key:a.id,className:'appt-row',style:{alignItems:'flex-start',padding:12}},
-        e('div',{className:`avatar ${av.c}`,style:{marginTop:2}},av.init),
-        e('div',{style:{flex:1}},
-          e('div',{style:{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap'}},e('span',{style:{fontSize:13,fontWeight:600}},cl.name),e('span',{className:`badge badge-${a.status==='change-requested'?'change':a.status}`},a.status==='change-requested'?'change req':a.status)),
-          e('div',{style:{fontSize:12,color:'var(--text-secondary)',marginTop:2}},fmtDate(a.date)+' · '+a.time+' · '+a.type),
-          a.status==='change-requested'&&cl.changeReq&&e('div',{style:{fontSize:12,background:'var(--bg-warning)',color:'var(--text-warning)',borderRadius:6,padding:'4px 8px',marginTop:4}},cl.changeReq),
-          e('div',{style:{display:'flex',gap:6,marginTop:8,flexWrap:'wrap'}},
-            a.status!=='confirmed'&&e('button',{className:'btn btn-sm btn-green',onClick:()=>setAppts(appts.map(x=>x.id===a.id?{...x,status:'confirmed'}:x))},'✓ Confirm'),
-            a.status!=='cancelled'&&e('button',{className:'btn btn-sm btn-danger',onClick:()=>setAppts(appts.map(x=>x.id===a.id?{...x,status:'cancelled'}:x))},'Cancel'),
-            e('a',{className:'wa-btn',onClick:()=>window.open(`https://wa.me/${cl.phone}?text=${encodeURIComponent('Hi '+cl.name.split(' ')[0]+'! Reminder: '+a.type+' session on '+fmtDate(a.date)+' at '+a.time+'. See you! 💪')}`,'_blank')},'WhatsApp'),
-            a.status==='change-requested'&&e('button',{className:'btn btn-sm',onClick:()=>setModal({type:'reschedule',clientId:cl.id,apptId:a.id})},'Reschedule')
-          )
+    e('div',{className:'stat-grid'},
+      e('div',{className:'stat-card'},e('div',{className:'stat-label'},"Today's classes"),e('div',{className:'stat-value'},todaySess.length),e('div',{className:'stat-sub'},'8 daily slots')),
+      e('div',{className:'stat-card'},e('div',{className:'stat-label'},'Clients today'),e('div',{className:'stat-value'},totalClientsToday),e('div',{className:'stat-sub'},'across all classes')),
+      e('div',{className:'stat-card'},e('div',{className:'stat-label'},'Total clients'),e('div',{className:'stat-value'},clients.length),e('div',{className:'stat-sub'},'enrolled')),
+      e('div',{className:'stat-card'},e('div',{className:'stat-label'},'Revenue (paid)'),e('div',{className:'stat-value'},fmtMoney(earned)),e('div',{className:'stat-sub'},overdue.length+' overdue'))
+    ),
+    overdue.length>0&&e('div',{className:'card',style:{marginBottom:14,borderColor:'#F7C1C1'}},
+      e('div',{style:{fontSize:13,fontWeight:600,color:'#A32D2D',marginBottom:6}},overdue.length+' overdue payment'+(overdue.length>1?'s':'')),
+      overdue.slice(0,3).map(p=>{const cl=getClient(p.clientId);return cl&&e('div',{key:p.id,style:{display:'flex',justifyContent:'space-between',fontSize:12,padding:'4px 0',borderBottom:'0.5px solid var(--border)'}},e('span',null,cl.name+' — '+p.desc),e('span',{style:{fontWeight:600,color:'#A32D2D'}},fmtMoney(p.amount)));})
+    ),
+    e('div',{className:'cal-shell'},
+      e('div',{className:'cal-header'},
+        e('div',{className:'cal-nav'},
+          e('div',{className:'cal-nav-btn',onClick:()=>move(-1)},'‹'),
+          e('div',{className:'cal-title'},calTitle()),
+          e('div',{className:'cal-nav-btn',onClick:()=>move(1)},'›'),
+          e('button',{className:'btn btn-sm',style:{marginLeft:4},onClick:()=>setRefDate(new Date(today))},'Today')
+        ),
+        e('div',{className:'cal-vtoggle'},
+          ['daily','weekly','monthly'].map(v=>e('div',{key:v,className:`cal-vbtn${calView===v?' active':''}`,onClick:()=>setCalView(v)},v[0].toUpperCase()+v.slice(1)))
         )
-      );
-    }))
+      ),
+      calView==='daily'  &&e(DailyView,  {refDate,sessions,clients,getSessionName,renameSession}),
+      calView==='weekly' &&e(WeeklyView, {refDate,sessions,clients,getSessionName,renameSession}),
+      calView==='monthly'&&e(MonthlyView,{refDate,sessions,clients,getSessionName,renameSession}),
+    )
   );
 }
 
-/* ─── CLIENTS ───────────────────────────────────────────── */
-function Clients({clients,setClients,selClient,setSelClient,appts,payments,setPayments}){
-  const [editModal,setEditModal]=useState(null);
+/* ── DAILY VIEW ────────────────────────────────────────── */
+function DailyView({refDate,sessions,clients,getSessionName,renameSession}){
+  const ds=fmt(refDate);
+  const daySessions=sessions.filter(s=>s.date===ds).sort((a,b)=>a.time.localeCompare(b.time));
+  const hours=Array.from({length:16},(_,i)=>i+5);
   const e=React.createElement;
+  return e('div',{className:'day-scroll'},
+    e('div',{className:'day-grid'},
+      hours.flatMap(h=>{
+        const label=(h<12?h:h===12?12:h-12)+':00'+(h<12?' am':' pm');
+        const slotS=daySessions.filter(s=>{const[hh]=s.time.split(':').map(Number);return hh===h;});
+        return[
+          e('div',{key:'l'+h,className:'day-hl'},label),
+          e('div',{key:'s'+h,className:'day-slot'},
+            slotS.map(s=>e(SessionBlock,{key:s.id,session:s,clients,getSessionName,renameSession}))
+          )
+        ];
+      }),
+      daySessions.length===0&&e('div',{style:{gridColumn:'1/-1',textAlign:'center',padding:24,fontSize:12,color:'var(--text-secondary)'}},'No sessions — weekdays only')
+    )
+  );
+}
+
+/* ── WEEKLY VIEW ───────────────────────────────────────── */
+function WeeklyView({refDate,sessions,clients,getSessionName,renameSession}){
+  const mon=new Date(refDate);mon.setDate(mon.getDate()-((mon.getDay()+6)%7));
+  const days=Array.from({length:7},(_,i)=>{const d=new Date(mon);d.setDate(d.getDate()+i);return d;});
+  const todayStr=fmt(today);const e=React.createElement;
+  return e('div',null,
+    e('div',{className:'week-header-grid'},
+      days.map(d=>{const ds=fmt(d);const isT=ds===todayStr;
+        return e('div',{key:ds,className:`week-col-header${isT?' tc':''}`},
+          d.toLocaleDateString('en-CA',{weekday:'short'}),
+          e('span',{className:'day-num'},d.getDate())
+        );})
+    ),
+    e('div',{className:'week-body-grid'},
+      days.map(d=>{const ds=fmt(d);const isT=ds===todayStr;
+        const da=sessions.filter(s=>s.date===ds).sort((a,b)=>a.time.localeCompare(b.time));
+        return e('div',{key:ds,className:`week-col${isT?' tc':''}`},
+          da.length===0?e('div',{style:{fontSize:10,color:'var(--text-secondary)',textAlign:'center',marginTop:10,opacity:.4}},'—'):
+          da.map(s=>e(SessionBlock,{key:s.id,session:s,clients,getSessionName,renameSession}))
+        );})
+    )
+  );
+}
+
+/* ── MONTHLY VIEW ──────────────────────────────────────── */
+function MonthlyView({refDate,sessions,clients,getSessionName,renameSession}){
+  const yr=refDate.getFullYear(),mo=refDate.getMonth();
+  const first=new Date(yr,mo,1);
+  const offset=(first.getDay()+6)%7;
+  const dim=new Date(yr,mo+1,0).getDate();
+  const prev=new Date(yr,mo,0).getDate();
+  const total=Math.ceil((dim+offset)/7)*7;
+  const todayStr=fmt(today);const e=React.createElement;
+  const cells=Array.from({length:total},(_,i)=>{
+    let d,it=true;
+    if(i<offset){d=new Date(yr,mo-1,prev-offset+i+1);it=false;}
+    else if(i>=offset+dim){d=new Date(yr,mo+1,i-offset-dim+1);it=false;}
+    else d=new Date(yr,mo,i-offset+1);
+    return{d,it};
+  });
+  return e('div',{className:'month-grid'},
+    ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>e('div',{key:d,className:'month-dow'},d)),
+    cells.map(({d,it},i)=>{
+      const ds=fmt(d);const isT=ds===todayStr;
+      const da=sessions.filter(s=>s.date===ds).sort((a,b)=>a.time.localeCompare(b.time));
+      const show=da.slice(0,3);const more=da.length-3;
+      return e('div',{key:i,className:`month-cell${!it?' om':''}${isT?' tdc':''}`},
+        e('div',{className:`mdn${isT?' tn':''}`},d.getDate()),
+        show.map(s=>{const name=getSessionName(s);const cnt=s.clientIds.length;
+          return e('div',{key:s.id,className:'s-wrap'},
+            e('div',{className:'mpill',title:name},name.split(' ')[0]+' '+s.time.slice(0,5)+' ('+cnt+')'),
+            e('div',{className:'s-tooltip'},
+              e('div',{style:{fontWeight:600,fontSize:12,marginBottom:4}},name+' · '+s.time),
+              e('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'3px 10px'}},
+                s.clientIds.map(id=>clients.find(c=>c.id===id)).filter(Boolean).map(c=>e('div',{key:c.id,style:{fontSize:11}},c.name))
+              )
+            )
+          );
+        }),
+        more>0&&e('div',{className:'mmore'},'+'+more+' more')
+      );
+    })
+  );
+}
+
+/* ── SCHEDULE VIEW ─────────────────────────────────────── */
+function ScheduleView({sessions,clients,getSessionName,renameSession}){
+  const [dateF,setDateF]=useState(fmt(today));
+  const filtered=sessions.filter(s=>s.date===dateF).sort((a,b)=>a.time.localeCompare(b.time));
+  const e=React.createElement;
+  return e('div',null,
+    e('div',{className:'ph'},
+      e('div',null,e('div',{className:'pt'},'Schedule'),e('div',{className:'ps'},'Click ✎ on any class to rename it')),
+      e('input',{className:'form-input',type:'date',value:dateF,onChange:ev=>setDateF(ev.target.value),style:{maxWidth:180}})
+    ),
+    filtered.length===0?e('div',{className:'empty-state'},'No sessions on this date — bootcamp runs Mon–Fri only'):
+    e('div',{style:{display:'flex',flexDirection:'column',gap:12}},
+      filtered.map(s=>{
+        const cl=s.clientIds.map(id=>clients.find(c=>c.id===id)).filter(Boolean);
+        const name=getSessionName(s);
+        return e('div',{key:s.id,className:'card'},
+          e('div',{style:{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:10}},
+            e('div',null,
+              e('span',{style:{fontSize:14,fontWeight:600}},name),
+              e('span',{style:{fontSize:12,color:'var(--text-secondary)',marginLeft:8}},s.time+' · '+cl.length+' clients')
+            ),
+            e('span',{className:'badge badge-bootcamp'},'Bootcamp')
+          ),
+          e('div',{style:{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(150px,1fr))',gap:'5px 10px'}},
+            cl.map(c=>{const av=getAv(c.name,c.id);
+              return e('div',{key:c.id,style:{display:'flex',alignItems:'center',gap:6,fontSize:12,padding:'3px 0',borderBottom:'0.5px solid var(--border)'}},
+                e('div',{className:`avatar ${av.c}`,style:{width:20,height:20,fontSize:8}},av.init),
+                c.name
+              );
+            })
+          )
+        );
+      })
+    )
+  );
+}
+
+/* ── CLIENTS VIEW ──────────────────────────────────────── */
+function ClientsView({clients,setClients,selClient,setSelClient,sessions,payments,photos,setPhotos,getSessionName}){
+  const [search,setSearch]=useState('');
+  const [editM,setEditM]=useState(null);
+  const [photoM,setPhotoM]=useState(null);
+  const e=React.createElement;
+
   if(selClient){
     const cl=clients.find(c=>c.id===selClient);if(!cl)return null;
     const av=getAv(cl.name,cl.id);
-    const clAppts=appts.filter(a=>a.clientId===cl.id).sort((a,b)=>b.date.localeCompare(a.date));
+    const clSess=sessions.filter(s=>s.clientIds.includes(cl.id)&&s.date>=fmt(addD(today,-7))&&s.date<=fmt(addD(today,7))).sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time));
     const clPay=payments.filter(p=>p.clientId===cl.id);
     const bmi=cl.weight&&cl.height?(cl.weight/((cl.height/100)**2)).toFixed(1):'-';
+    const ph=photos[cl.id]||{};
+    const [activeTab,setActiveTab]=useState('Sessions');
+
     return e('div',null,
-      e('div',{className:'page-header'},
+      e('div',{className:'ph'},
         e('button',{className:'btn btn-sm',onClick:()=>setSelClient(null)},'← Back'),
-        e('div',{style:{display:'flex',gap:8,flexWrap:'wrap'}},
-          e('button',{className:'btn btn-pdf btn-sm',onClick:()=>exportClientPDF(cl,appts,payments)},'⤓ PDF'),
-          e('button',{className:'btn btn-sm',onClick:()=>setEditModal(cl)},'Edit'),
-          e('a',{className:'wa-btn',onClick:()=>window.open(`https://wa.me/${cl.phone}`,'_blank')},'WhatsApp')
+        e('div',{style:{display:'flex',gap:7,flexWrap:'wrap'}},
+          e('button',{className:'btn btn-sm',onClick:()=>setEditM(cl)},'Edit'),
+          e('button',{className:'btn btn-sm btn-insta',onClick:()=>setPhotoM(cl)},'📸 Progress & Share'),
+          e(WaBtn,{phone:cl.phone,label:'WhatsApp'})
         )
       ),
       e('div',{className:'detail-panel'},
@@ -486,189 +699,207 @@ function Clients({clients,setClients,selClient,setSelClient,appts,payments,setPa
               e('div',{className:`avatar ${av.c}`,style:{width:52,height:52,fontSize:17,marginBottom:8}},av.init),
               e('div',{style:{fontSize:15,fontWeight:600}},cl.name),
               e('div',{style:{fontSize:12,color:'var(--text-secondary)'}},cl.email),
-              e('div',{className:'goal-tag'},cl.goal)
+              e('div',{className:'goal-tag'},cl.goal),
+              ph.before&&ph.after&&e('div',{style:{marginTop:6,fontSize:10,color:'#534AB7',background:'#EEEDFE',padding:'2px 8px',borderRadius:6}},'📸 Progress photos saved')
             ),
             [['Age',cl.age+' yrs'],['Weight',cl.weight+' kg'],['Height',cl.height+' cm'],['BMI',bmi],['Joined',cl.joinDate]].map(([k,v])=>e('div',{key:k,className:'metric-row'},e('span',{style:{color:'var(--text-secondary)'}},k),e('span',{style:{fontWeight:600}},v))),
             cl.notes&&e('div',{style:{marginTop:10,fontSize:12,color:'var(--text-secondary)',lineHeight:1.5}},cl.notes)
-          ),
-          cl.changeReq&&e('div',{className:'card',style:{borderColor:'#FAC775'}},e('div',{className:'card-title',style:{color:'#854F0B'}},'Change Request'),e('div',{style:{fontSize:12}},cl.changeReq))
+          )
         ),
         e('div',null,
-          e('div',{className:'card',style:{marginBottom:14}},
-            e('div',{className:'card-title'},'Appointments'),
-            clAppts.length===0?e('div',{className:'empty-state'},'None yet'):
-            e('div',{className:'appt-list'},clAppts.map(a=>e('div',{key:a.id,className:'appt-row'},e('div',{style:{flex:1}},e('div',{style:{fontSize:13,fontWeight:600}},a.type),e('div',{style:{fontSize:11,color:'var(--text-secondary)'}},fmtDate(a.date)+' · '+a.time)),e('span',{className:`badge badge-${a.status==='change-requested'?'change':a.status}`},a.status))))
+          e('div',{className:'tabs'},
+            ['Sessions','Payments'].map(t=>e('div',{key:t,className:`tab${activeTab===t?' active':''}`,onClick:()=>setActiveTab(t)},t))
           ),
-          e('div',{className:'card'},
-            e('div',{className:'card-title'},'Payments'),
-            clPay.length===0?e('div',{className:'empty-state'},'No payments'):
-            e('div',{style:{display:'flex',flexDirection:'column',gap:7}},clPay.map(p=>e('div',{key:p.id,className:'pay-row'},e('div',{style:{flex:1}},e('div',{style:{fontSize:13,fontWeight:600}},p.desc),e('div',{className:'pay-meta'},p.date)),e('div',{style:{textAlign:'right'}},e('div',{className:'pay-amount'},fmtMoney(p.amount)),e('span',{className:`badge badge-${p.status}`},p.status)))))
+          activeTab==='Sessions'&&(
+            clSess.length===0?e('div',{className:'empty-state'},'No sessions in ±7 days from today'):
+            e('div',{style:{display:'flex',flexDirection:'column',gap:7}},
+              clSess.map(s=>e('div',{key:s.id,style:{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'9px 12px',border:'0.5px solid var(--border)',borderRadius:var_rmd(),fontSize:12,background:'var(--bg-primary)'}},
+                e('div',null,e('span',{style:{fontWeight:600}},getSessionName(s)),' · ',s.time),
+                e('div',{style:{color:'var(--text-secondary)'}},fmtDate(s.date))
+              ))
+            )
+          ),
+          activeTab==='Payments'&&(
+            clPay.length===0?e('div',{className:'empty-state'},'No payments recorded'):
+            e('div',{style:{display:'flex',flexDirection:'column',gap:7}},
+              clPay.map(p=>e('div',{key:p.id,className:'pay-row'},e('div',{style:{flex:1}},e('div',{style:{fontSize:12,fontWeight:600}},p.desc),e('div',{style:{fontSize:10,color:'var(--text-secondary)'}},p.date)),e('div',{style:{textAlign:'right'}},e('div',{style:{fontWeight:600,fontSize:14}},fmtMoney(p.amount)),e('span',{className:`badge badge-${p.status}`},p.status))))
+            )
           )
         )
       ),
-      editModal&&e(EditClientModal,{client:editModal,onSave:u=>{setClients(cs=>cs.map(c=>c.id===u.id?u:c));setEditModal(null)},onClose:()=>setEditModal(null)})
+      editM&&e(EditClientModal,{client:editM,onSave:u=>{setClients(cs=>cs.map(c=>c.id===u.id?u:c));setEditM(null)},onClose:()=>setEditM(null)}),
+      photoM&&e(PhotoManager,{client:photoM,photos,setPhotos,onClose:()=>setPhotoM(null)})
     );
   }
+
+  const shown=clients.filter(c=>!search||c.name.toLowerCase().includes(search.toLowerCase())||c.goal.toLowerCase().includes(search.toLowerCase()));
   return e('div',null,
-    e('div',{className:'page-header'},
-      e('div',null,e('div',{className:'page-title'},'Clients'),e('div',{className:'page-sub'},clients.length+' active members')),
-      e('button',{className:'btn btn-primary',onClick:()=>setEditModal({id:null,name:'',phone:'',email:'',age:'',weight:'',height:'',goal:'Weight Loss',notes:'',joinDate:fmt(today),changeReq:null})},'+ Add Client')
+    e('div',{className:'ph'},
+      e('div',null,e('div',{className:'pt'},'Clients'),e('div',{className:'ps'},clients.length+' enrolled')),
+      e('div',{style:{display:'flex',gap:8,flexWrap:'wrap'}},
+        e('input',{className:'form-input',placeholder:'Search name or goal...',value:search,onChange:ev=>setSearch(ev.target.value),style:{maxWidth:220}}),
+        e('button',{className:'btn btn-primary',onClick:()=>setEditM({id:null,name:'',phone:'',email:'',age:'',weight:'',height:'',goal:'Weight Loss',notes:'',joinDate:fmt(today),changeReq:null})},'+ Add')
+      )
     ),
-    e('div',{className:'client-grid'},clients.map((cl,i)=>{
-      const av=getAv(cl.name,i);const bmi=cl.weight&&cl.height?(cl.weight/((cl.height/100)**2)).toFixed(1):'-';
-      const hasPending=payments.some(p=>p.clientId===cl.id&&(p.status==='pending'||p.status==='overdue'));
+    e('div',{className:'client-grid'},shown.map((cl,i)=>{
+      const av=getAv(cl.name,i);const bmi=cl.weight&&cl.height?(cl.weight/((cl.height/100)**2)).toFixed(1):'-';const ph=photos[cl.id]||{};
       return e('div',{key:cl.id,className:'client-card',onClick:()=>setSelClient(cl.id)},
-        e('div',{style:{display:'flex',alignItems:'center',gap:10}},e('div',{className:`avatar ${av.c}`,style:{width:38,height:38,fontSize:13}},av.init),e('div',null,e('div',{style:{fontSize:14,fontWeight:600}},cl.name),e('div',{style:{fontSize:11,color:'var(--text-secondary)'}},cl.age+' yrs · '+cl.weight+'kg · BMI '+bmi))),
-        e('div',{style:{marginTop:8,display:'flex',justifyContent:'space-between',alignItems:'center'}},e('div',{className:'goal-tag'},cl.goal),e('div',{style:{display:'flex',gap:4}},cl.changeReq&&e('span',{className:'badge badge-change',style:{fontSize:10}},'req'),hasPending&&e('span',{className:'badge badge-pending',style:{fontSize:10}},'pay')))
+        e('div',{style:{display:'flex',alignItems:'center',gap:8}},e('div',{className:`avatar ${av.c}`,style:{width:36,height:36,fontSize:12}},av.init),e('div',null,e('div',{style:{fontSize:13,fontWeight:600}},cl.name),e('div',{style:{fontSize:10,color:'var(--text-secondary)'}},cl.age+'y · '+cl.weight+'kg · BMI '+bmi))),
+        e('div',{style:{marginTop:7,display:'flex',justifyContent:'space-between',alignItems:'center'}},e('div',{className:'goal-tag'},cl.goal),ph.before&&ph.after&&e('span',{style:{fontSize:12}},'📸'))
       );
     })),
-    editModal&&e(EditClientModal,{client:editModal,onSave:u=>{if(u.id)setClients(cs=>cs.map(c=>c.id===u.id?u:c));else setClients(cs=>[...cs,{...u,id:Date.now()}]);setEditModal(null)},onClose:()=>setEditModal(null)})
+    editM&&e(EditClientModal,{client:editM,onSave:u=>{if(u.id)setClients(cs=>cs.map(c=>c.id===u.id?u:c));else setClients(cs=>[...cs,{...u,id:Date.now()}]);setEditM(null)},onClose:()=>setEditM(null)})
   );
 }
 
+function var_rmd(){return'var(--radius-md)';}
+
+/* ── PHOTO MANAGER ─────────────────────────────────────── */
+function PhotoManager({client,photos,setPhotos,onClose}){
+  const ph=photos[client.id]||{before:null,after:null,beforeDate:'',afterDate:''};
+  const [loc,setLoc]=useState(ph);
+  const [cardUrl,setCardUrl]=useState(null);
+  const [generating,setGenerating]=useState(false);
+  const e=React.createElement;
+  const handleFile=(slot,file)=>{
+    const reader=new FileReader();
+    reader.onload=ev=>{const upd={...loc,[slot]:ev.target.result,[slot+'Date']:fmt(today)};setLoc(upd);setPhotos(p=>({...p,[client.id]:upd}));};
+    reader.readAsDataURL(file);
+  };
+  const makeCard=async()=>{setGenerating(true);const url=await genProgressCard(client,loc.before,loc.after);setCardUrl(url);setGenerating(false);};
+
+  const PhotoSlot=(slot,label)=>e('div',{style:{textAlign:'center'}},
+    e('div',{style:{fontSize:12,fontWeight:600,marginBottom:8,color:'var(--text-secondary)'}},label),
+    e('label',{className:'photo-slot',style:{cursor:'pointer',display:'block',height:210}},
+      loc[slot]
+        ?e('img',{src:loc[slot],alt:label,style:{width:'100%',height:210,objectFit:'cover',borderRadius:var_rmd()}})
+        :e('div',{style:{padding:20,color:'var(--text-secondary)',textAlign:'center',fontSize:12}},e('div',{style:{fontSize:30,marginBottom:8}},'📷'),e('div',null,'Tap to upload'),e('div',{style:{fontSize:10,marginTop:4}},'JPG or PNG')),
+      loc[slot]&&e('div',{className:'photo-overlay',style:{borderRadius:var_rmd()}},e('span',{style:{color:'#fff',fontSize:12}},'Change photo')),
+      e('input',{type:'file',accept:'image/*',style:{display:'none'},onChange:ev=>ev.target.files[0]&&handleFile(slot,ev.target.files[0])})
+    ),
+    loc[slot]&&e('div',{style:{fontSize:10,color:'var(--text-secondary)',marginTop:5}},loc[slot+'Date'])
+  );
+
+  return e('div',{className:'modal-overlay',onClick:ev=>ev.target===ev.currentTarget&&onClose()},
+    e('div',{className:'modal',style:{maxWidth:560}},
+      e('div',{className:'modal-title'},'📸 Progress Photos — '+client.name),
+      e('div',{className:'form-row',style:{gap:16,marginBottom:16}},
+        PhotoSlot('before','BEFORE'), PhotoSlot('after','AFTER')
+      ),
+      e('div',{style:{borderTop:'0.5px solid var(--border)',paddingTop:14}},
+        e('div',{style:{fontSize:13,fontWeight:600,marginBottom:10}},'Share Progress Card'),
+        !cardUrl?e('div',{style:{textAlign:'center',padding:'12px 0'}},
+          e('button',{className:'btn btn-primary',onClick:makeCard,disabled:generating},generating?'Generating…':'⚡ Generate Progress Card'),
+          e('div',{style:{fontSize:11,color:'var(--text-secondary)',marginTop:6}},'Creates a 1080×1080 shareable image')
+        ):
+        e('div',null,
+          e('img',{src:cardUrl,style:{width:'100%',borderRadius:10,marginBottom:12}}),
+          e('div',{style:{display:'flex',gap:8,flexWrap:'wrap',marginBottom:10}},
+            e('button',{className:'btn btn-insta',onClick:()=>shareCard(cardUrl,client.name)},navigator.share?'📤 Share':'⬇ Download Card'),
+            e('a',{className:'btn',href:'https://www.instagram.com/',target:'_blank',rel:'noopener'},'Open Instagram'),
+            e('button',{className:'btn btn-sm',onClick:()=>setCardUrl(null)},'Regenerate')
+          ),
+          e('div',{className:'info-banner'},'Tip: Download the card → open Instagram → tap + → select the downloaded image → share as a post or story.')
+        )
+      ),
+      e('div',{style:{display:'flex',justifyContent:'flex-end',marginTop:14}},e('button',{className:'btn',onClick:onClose},'Close'))
+    )
+  );
+}
+
+/* ── EDIT CLIENT MODAL ─────────────────────────────────── */
 function EditClientModal({client,onSave,onClose}){
   const [form,setForm]=useState({...client});const set=(k,v)=>setForm(f=>({...f,[k]:v}));
   const goals=['Weight Loss','Muscle Gain','Endurance','Flexibility','General Fitness','Athletic Performance'];
   const e=React.createElement;
   return e('div',{className:'modal-overlay',onClick:ev=>ev.target===ev.currentTarget&&onClose()},
     e('div',{className:'modal'},
-      e('div',{className:'modal-title'},client.id?'Edit Client':'Add New Client'),
-      e('div',{className:'form-row'},e('div',{className:'form-group'},e('label',{className:'form-label'},'Full Name'),e('input',{className:'form-input',value:form.name,onChange:ev=>set('name',ev.target.value)})),e('div',{className:'form-group'},e('label',{className:'form-label'},'Phone (WhatsApp)'),e('input',{className:'form-input',placeholder:'14165550101',value:form.phone,onChange:ev=>set('phone',ev.target.value)}))),
+      e('div',{className:'modal-title'},client.id?'Edit Client':'Add Client'),
+      e('div',{className:'form-row'},e('div',{className:'form-group'},e('label',{className:'form-label'},'Full Name'),e('input',{className:'form-input',value:form.name,onChange:ev=>set('name',ev.target.value)})),e('div',{className:'form-group'},e('label',{className:'form-label'},'Phone (WhatsApp)'),e('input',{className:'form-input',value:form.phone,onChange:ev=>set('phone',ev.target.value)}))),
       e('div',{className:'form-group'},e('label',{className:'form-label'},'Email'),e('input',{className:'form-input',value:form.email,onChange:ev=>set('email',ev.target.value)})),
       e('div',{className:'form-row'},e('div',{className:'form-group'},e('label',{className:'form-label'},'Age'),e('input',{className:'form-input',type:'number',value:form.age,onChange:ev=>set('age',ev.target.value)})),e('div',{className:'form-group'},e('label',{className:'form-label'},'Weight (kg)'),e('input',{className:'form-input',type:'number',value:form.weight,onChange:ev=>set('weight',ev.target.value)}))),
-      e('div',{className:'form-row'},e('div',{className:'form-group'},e('label',{className:'form-label'},'Height (cm)'),e('input',{className:'form-input',type:'number',value:form.height,onChange:ev=>set('height',ev.target.value)})),e('div',{className:'form-group'},e('label',{className:'form-label'},'Join Date'),e('input',{className:'form-input',type:'date',value:form.joinDate,onChange:ev=>set('joinDate',ev.target.value)}))),
-      e('div',{className:'form-group'},e('label',{className:'form-label'},'Goal'),e('select',{className:'form-input',value:form.goal,onChange:ev=>set('goal',ev.target.value)},goals.map(g=>e('option',{key:g,value:g},g)))),
+      e('div',{className:'form-row'},e('div',{className:'form-group'},e('label',{className:'form-label'},'Height (cm)'),e('input',{className:'form-input',type:'number',value:form.height,onChange:ev=>set('height',ev.target.value)})),e('div',{className:'form-group'},e('label',{className:'form-label'},'Goal'),e('select',{className:'form-input',value:form.goal,onChange:ev=>set('goal',ev.target.value)},goals.map(g=>e('option',{key:g,value:g},g))))),
       e('div',{className:'form-group'},e('label',{className:'form-label'},'Notes / Health conditions'),e('textarea',{className:'form-input',rows:2,value:form.notes,onChange:ev=>set('notes',ev.target.value)})),
-      e('div',{className:'form-group'},e('label',{className:'form-label'},'Client goal (their own words)'),e('textarea',{className:'form-input',rows:2,placeholder:'e.g. Lose 10kg before wedding...',value:form.changeReq||'',onChange:ev=>set('changeReq',ev.target.value||null)})),
       e('div',{style:{display:'flex',gap:8,justifyContent:'flex-end',marginTop:8}},e('button',{className:'btn',onClick:onClose},'Cancel'),e('button',{className:'btn btn-primary',onClick:()=>onSave(form)},'Save'))
     )
   );
 }
 
-/* ─── GROUPS ────────────────────────────────────────────── */
-function Groups({groups,setGroups,clients}){
-  const [compose,setCompose]=useState(null);const [newGroup,setNewGroup]=useState(false);
-  const getClient=id=>clients.find(c=>c.id===id);const e=React.createElement;
-  return e('div',null,
-    e('div',{className:'page-header'},e('div',null,e('div',{className:'page-title'},'Groups'),e('div',{className:'page-sub'},'Broadcast updates via WhatsApp')),e('button',{className:'btn btn-primary',onClick:()=>setNewGroup(true)},'+ New Group')),
-    e('div',{style:{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(270px,1fr))',gap:12}},
-      groups.map(g=>e('div',{key:g.id,className:'group-card'},
-        e('div',{style:{fontSize:15,fontWeight:600,marginBottom:3}},g.name),
-        e('div',{style:{fontSize:12,color:'var(--text-secondary)',marginBottom:10}},g.description+' · '+g.clientIds.length+' members'),
-        e('div',{style:{marginBottom:10}},g.clientIds.map(id=>{const cl=getClient(id);if(!cl)return null;return e('span',{key:id,style:{display:'inline-flex',alignItems:'center',background:'var(--bg-secondary)',border:'0.5px solid var(--border)',borderRadius:6,padding:'2px 7px',fontSize:11,margin:2}},cl.name.split(' ')[0]);})),
-        e('div',{style:{display:'flex',gap:7}},e('button',{className:'btn btn-sm btn-green',onClick:()=>setCompose({group:g})},'Compose & Send'),e('button',{className:'btn btn-sm btn-danger',onClick:()=>{if(confirm('Delete this group?'))setGroups(gs=>gs.filter(x=>x.id!==g.id));}},'Delete'))
-      ))
-    ),
-    compose&&e(ComposeModal,{group:compose.group,clients,onClose:()=>setCompose(null)}),
-    newGroup&&e(NewGroupModal,{clients,onSave:g=>{setGroups(gs=>[...gs,{...g,id:Date.now()}]);setNewGroup(false)},onClose:()=>setNewGroup(false)})
-  );
-}
-
-function ComposeModal({group,clients,onClose}){
-  const [msg,setMsg]=useState('');const [sent,setSent]=useState([]);
-  const members=clients.filter(c=>group.clientIds.includes(c.id));const e=React.createElement;
-  return e('div',{className:'modal-overlay',onClick:ev=>ev.target===ev.currentTarget&&onClose()},
-    e('div',{className:'modal'},
-      e('div',{className:'modal-title'},'Send to: '+group.name),
-      e('div',{className:'info-banner'},'Free via WhatsApp links — click send per member. Upgrade to Twilio for automated bulk SMS.'),
-      e('div',{className:'form-group'},e('label',{className:'form-label'},'Message'),e('textarea',{className:'form-input',rows:4,placeholder:'Type your message...',value:msg,onChange:ev=>setMsg(ev.target.value)})),
-      e('div',{style:{display:'flex',flexDirection:'column',gap:6,marginBottom:12}},
-        members.map(cl=>{const av=getAv(cl.name,cl.id);const done=sent.includes(cl.id);
-          return e('div',{key:cl.id,style:{display:'flex',alignItems:'center',gap:10,padding:'8px 10px',border:`0.5px solid ${done?'#c0dd97':'var(--border)'}`,borderRadius:8,background:done?'var(--bg-success)':'var(--bg-primary)'}},e('div',{className:`avatar ${av.c}`},av.init),e('span',{style:{flex:1,fontSize:13}},cl.name),done?e('span',{style:{fontSize:12,color:'var(--text-success)'}},'✓ Sent'):e('a',{className:'wa-btn',onClick:()=>{window.open(`https://wa.me/${cl.phone}?text=${encodeURIComponent(msg)}`,'_blank');setSent(s=>[...s,cl.id]);},style:{cursor:msg?'pointer':'not-allowed',opacity:msg?1:.4}},'Send'));})
-      ),
-      e('div',{style:{display:'flex',justifyContent:'flex-end'}},e('button',{className:'btn',onClick:onClose},'Close'))
-    )
-  );
-}
-
-function NewGroupModal({clients,onSave,onClose}){
-  const [name,setName]=useState('');const [desc,setDesc]=useState('');const [sel,setSel]=useState([]);
-  const toggle=id=>setSel(s=>s.includes(id)?s.filter(x=>x!==id):[...s,id]);const e=React.createElement;
-  return e('div',{className:'modal-overlay',onClick:ev=>ev.target===ev.currentTarget&&onClose()},
-    e('div',{className:'modal'},
-      e('div',{className:'modal-title'},'New Group'),
-      e('div',{className:'form-group'},e('label',{className:'form-label'},'Name'),e('input',{className:'form-input',value:name,onChange:ev=>setName(ev.target.value)})),
-      e('div',{className:'form-group'},e('label',{className:'form-label'},'Description'),e('input',{className:'form-input',value:desc,onChange:ev=>setDesc(ev.target.value)})),
-      e('div',{className:'form-group'},e('label',{className:'form-label'},'Members'),
-        e('div',{style:{display:'flex',flexDirection:'column',gap:5}},clients.map((cl,i)=>{const av=getAv(cl.name,i);const on=sel.includes(cl.id);return e('div',{key:cl.id,style:{display:'flex',alignItems:'center',gap:10,padding:'7px 10px',border:`0.5px solid ${on?'#185fa5':'var(--border)'}`,borderRadius:8,cursor:'pointer',background:on?'var(--bg-info)':'var(--bg-primary)'},onClick:()=>toggle(cl.id)},e('div',{className:`avatar ${av.c}`},av.init),e('span',{style:{flex:1,fontSize:13}},cl.name),on&&e('span',{style:{color:'var(--text-info)'}},'✓'));}))
-      ),
-      e('div',{style:{display:'flex',gap:8,justifyContent:'flex-end'}},e('button',{className:'btn',onClick:onClose},'Cancel'),e('button',{className:'btn btn-primary',disabled:!name||sel.length===0,onClick:()=>onSave({name,description:desc,clientIds:sel})},'Create'))
-    )
-  );
-}
-
-/* ─── PAYMENTS ──────────────────────────────────────────── */
-function Payments({payments,setPayments,clients,getClient}){
-  const [tab,setTab]=useState('all');const [addModal,setAddModal]=useState(false);const e=React.createElement;
-  const total=payments.reduce((s,p)=>s+p.amount,0);
-  const paid=payments.filter(p=>p.status==='paid').reduce((s,p)=>s+p.amount,0);
-  const pend=payments.filter(p=>p.status==='pending').reduce((s,p)=>s+p.amount,0);
-  const over=payments.filter(p=>p.status==='overdue').reduce((s,p)=>s+p.amount,0);
+/* ── PAYMENTS VIEW ─────────────────────────────────────── */
+function PaymentsView({payments,setPayments,clients,getClient}){
+  const [tab,setTab]=useState('all');const [addM,setAddM]=useState(false);const e=React.createElement;
+  const tot=payments.reduce((s,p)=>s+p.amount,0);
+  const pd=payments.filter(p=>p.status==='paid').reduce((s,p)=>s+p.amount,0);
+  const pn=payments.filter(p=>p.status==='pending').reduce((s,p)=>s+p.amount,0);
+  const ov=payments.filter(p=>p.status==='overdue').reduce((s,p)=>s+p.amount,0);
   const filtered=payments.filter(p=>tab==='all'||p.status===tab).sort((a,b)=>b.date.localeCompare(a.date));
   return e('div',null,
-    e('div',{className:'page-header'},e('div',null,e('div',{className:'page-title'},'Payments'),e('div',{className:'page-sub'},'Track fees and invoices')),e('div',{style:{display:'flex',gap:8}},e('button',{className:'btn btn-pdf',onClick:()=>exportPaymentsPDF(payments,clients)},'⤓ Export PDF'),e('button',{className:'btn btn-primary',onClick:()=>setAddModal(true)},'+ Add Payment'))),
-    e('div',{style:{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:10,marginBottom:18}},
-      [['Total',total,null],['Paid',paid,'#3b6d11'],['Pending',pend,'#ba7517'],['Overdue',over,'#a32d2d']].map(([l,v,c])=>e('div',{key:l,className:'stat-card',style:c?{borderLeft:`3px solid ${c}`}:{}},e('div',{className:'stat-label'},l),e('div',{className:'stat-value',style:{fontSize:18}},fmtMoney(v))))
+    e('div',{className:'ph'},e('div',null,e('div',{className:'pt'},'Payments'),e('div',{className:'ps'},'Track fees and invoices')),e('button',{className:'btn btn-primary',onClick:()=>setAddM(true)},'+ Add Payment')),
+    e('div',{style:{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:10,marginBottom:16}},
+      [['Total',tot,null],['Paid',pd,'#3b6d11'],['Pending',pn,'#ba7517'],['Overdue',ov,'#a32d2d']].map(([l,v,c])=>e('div',{key:l,className:'stat-card',style:c?{borderLeft:`3px solid ${c}`}:{}},e('div',{className:'stat-label'},l),e('div',{className:'stat-value',style:{fontSize:18}},fmtMoney(v))))
     ),
     e('div',{className:'tabs'},['all','paid','pending','overdue'].map(t=>e('div',{key:t,className:`tab${tab===t?' active':''}`,onClick:()=>setTab(t)},t[0].toUpperCase()+t.slice(1)))),
     filtered.length===0?e('div',{className:'empty-state'},'No payments'):
-    e('div',{style:{display:'flex',flexDirection:'column',gap:8}},filtered.map(p=>{const cl=getClient(p.clientId);if(!cl)return null;const av=getAv(cl.name,cl.id);
-      return e('div',{key:p.id,className:'pay-row'},
-        e('div',{className:`avatar ${av.c}`},av.init),
-        e('div',{style:{flex:1}},e('div',{style:{fontSize:13,fontWeight:600}},cl.name),e('div',{className:'pay-meta'},p.desc+' · '+p.date)),
-        e('div',{style:{textAlign:'right',marginRight:10}},e('div',{className:'pay-amount'},fmtMoney(p.amount)),e('span',{className:`badge badge-${p.status}`},p.status)),
-        e('div',{style:{display:'flex',gap:5}},p.status!=='paid'&&e('button',{className:'btn btn-sm btn-green',onClick:()=>setPayments(ps=>ps.map(x=>x.id===p.id?{...x,status:'paid'}:x))},'Mark Paid'),e('button',{className:'btn btn-sm btn-danger',onClick:()=>{if(confirm('Delete this payment?'))setPayments(ps=>ps.filter(x=>x.id!==p.id));}},'✕'))
-      );
-    })),
-    addModal&&e(AddPaymentModal,{clients,onSave:p=>{setPayments(ps=>[...ps,{...p,id:Date.now()}]);setAddModal(false)},onClose:()=>setAddModal(false)})
+    e('div',{style:{display:'flex',flexDirection:'column',gap:7}},
+      filtered.map(p=>{const cl=getClient(p.clientId);if(!cl)return null;const av=getAv(cl.name,cl.id);
+        return e('div',{key:p.id,className:'pay-row'},
+          e('div',{className:`avatar ${av.c}`},av.init),
+          e('div',{style:{flex:1}},e('div',{style:{fontSize:12,fontWeight:600}},cl.name),e('div',{style:{fontSize:10,color:'var(--text-secondary)'}},p.desc+' · '+p.date)),
+          e('div',{style:{textAlign:'right',marginRight:10}},e('div',{style:{fontWeight:600,fontSize:14}},fmtMoney(p.amount)),e('span',{className:`badge badge-${p.status}`},p.status)),
+          e('div',{style:{display:'flex',gap:5}},
+            p.status!=='paid'&&e('button',{className:'btn btn-sm btn-green',onClick:()=>setPayments(ps=>ps.map(x=>x.id===p.id?{...x,status:'paid'}:x))},'Mark Paid'),
+            e('button',{className:'btn btn-sm btn-danger',onClick:()=>{if(confirm('Delete this payment?'))setPayments(ps=>ps.filter(x=>x.id!==p.id));}},'✕')
+          )
+        );
+      })
+    ),
+    addM&&e(AddPaymentModal,{clients,onSave:p=>{setPayments(ps=>[...ps,{...p,id:Date.now()}]);setAddM(false)},onClose:()=>setAddM(false)})
   );
 }
 
 function AddPaymentModal({clients,onSave,onClose}){
-  const [form,setForm]=useState({clientId:'',amount:'',date:fmt(today),desc:'',status:'pending'});
+  const [form,setForm]=useState({clientId:'',amount:'',date:fmt(today),desc:'Monthly bootcamp',status:'pending'});
   const set=(k,v)=>setForm(f=>({...f,[k]:v}));const e=React.createElement;
   return e('div',{className:'modal-overlay',onClick:ev=>ev.target===ev.currentTarget&&onClose()},
     e('div',{className:'modal'},
       e('div',{className:'modal-title'},'Add Payment'),
       e('div',{className:'form-group'},e('label',{className:'form-label'},'Client'),e('select',{className:'form-input',value:form.clientId,onChange:ev=>set('clientId',parseInt(ev.target.value))},e('option',{value:''},'Select client...'),clients.map(c=>e('option',{key:c.id,value:c.id},c.name)))),
-      e('div',{className:'form-row'},e('div',{className:'form-group'},e('label',{className:'form-label'},'Amount ($)'),e('input',{className:'form-input',type:'number',placeholder:'200',value:form.amount,onChange:ev=>set('amount',parseFloat(ev.target.value))})),e('div',{className:'form-group'},e('label',{className:'form-label'},'Date'),e('input',{className:'form-input',type:'date',value:form.date,onChange:ev=>set('date',ev.target.value)}))),
-      e('div',{className:'form-group'},e('label',{className:'form-label'},'Description'),e('input',{className:'form-input',placeholder:'Monthly package — April',value:form.desc,onChange:ev=>set('desc',ev.target.value)})),
-      e('div',{className:'form-group'},e('label',{className:'form-label'},'Status'),e('select',{className:'form-input',value:form.status,onChange:ev=>set('status',ev.target.value)},['pending','paid','overdue','partial'].map(s=>e('option',{key:s,value:s},s[0].toUpperCase()+s.slice(1))))),
+      e('div',{className:'form-row'},e('div',{className:'form-group'},e('label',{className:'form-label'},'Amount ($)'),e('input',{className:'form-input',type:'number',placeholder:'180',value:form.amount,onChange:ev=>set('amount',parseFloat(ev.target.value))})),e('div',{className:'form-group'},e('label',{className:'form-label'},'Date'),e('input',{className:'form-input',type:'date',value:form.date,onChange:ev=>set('date',ev.target.value)}))),
+      e('div',{className:'form-group'},e('label',{className:'form-label'},'Description'),e('input',{className:'form-input',value:form.desc,onChange:ev=>set('desc',ev.target.value)})),
+      e('div',{className:'form-group'},e('label',{className:'form-label'},'Status'),e('select',{className:'form-input',value:form.status,onChange:ev=>set('status',ev.target.value)},['pending','paid','overdue'].map(s=>e('option',{key:s,value:s},s[0].toUpperCase()+s.slice(1))))),
       e('div',{style:{display:'flex',gap:8,justifyContent:'flex-end',marginTop:8}},e('button',{className:'btn',onClick:onClose},'Cancel'),e('button',{className:'btn btn-primary',disabled:!form.clientId||!form.amount,onClick:()=>onSave(form)},'Add'))
     )
   );
 }
 
-/* ─── MODALS ROUTER ─────────────────────────────────────── */
-function ModalRouter({modal,setModal,clients,setClients,appts,setAppts,getClient}){
-  if(modal.type==='book')return React.createElement(BookModal,{clients,setAppts,onClose:()=>setModal(null)});
-  if(modal.type==='reschedule')return React.createElement(RescheduleModal,{clientId:modal.clientId,apptId:modal.apptId,appts,setAppts,clients,setClients,onClose:()=>setModal(null)});
+/* ── MODAL ROUTER ──────────────────────────────────────── */
+function ModalRouter({modal,setModal,clients,sessions,setSessions,showToast}){
+  if(modal.type==='addSession')return React.createElement(AddSessionModal,{clients,onSave:s=>{setSessions(ss=>[...ss,{...s,id:Date.now(),isGroup:true,type:'Bootcamp',status:'confirmed'}]);setModal(null);},onClose:()=>setModal(null)});
   return null;
 }
-function BookModal({clients,setAppts,onClose}){
-  const [form,setForm]=useState({clientId:'',date:fmt(today),time:'09:00',type:'Strength',notes:''});
-  const set=(k,v)=>setForm(f=>({...f,[k]:v}));const e=React.createElement;
-  const save=()=>{if(!form.clientId)return;setAppts(a=>[...a,{...form,id:Date.now(),clientId:parseInt(form.clientId),status:'confirmed'}]);onClose();};
+
+function AddSessionModal({clients,onSave,onClose}){
+  const [form,setForm]=useState({name:'',clientIds:[],date:fmt(today),time:'06:00'});
+  const set=(k,v)=>setForm(f=>({...f,[k]:v}));
+  const toggle=id=>setForm(f=>({...f,clientIds:f.clientIds.includes(id)?f.clientIds.filter(x=>x!==id):[...f.clientIds,id]}));
+  const [search,setSearch]=useState('');
+  const shown=clients.filter(c=>!search||c.name.toLowerCase().includes(search.toLowerCase())).slice(0,20);
+  const e=React.createElement;
   return e('div',{className:'modal-overlay',onClick:ev=>ev.target===ev.currentTarget&&onClose()},
     e('div',{className:'modal'},
-      e('div',{className:'modal-title'},'Book Appointment'),
-      e('div',{className:'form-group'},e('label',{className:'form-label'},'Client'),e('select',{className:'form-input',value:form.clientId,onChange:ev=>set('clientId',ev.target.value)},e('option',{value:''},'Select...'),clients.map(c=>e('option',{key:c.id,value:c.id},c.name)))),
-      e('div',{className:'form-row'},e('div',{className:'form-group'},e('label',{className:'form-label'},'Date'),e('input',{className:'form-input',type:'date',value:form.date,onChange:ev=>set('date',ev.target.value)})),e('div',{className:'form-group'},e('label',{className:'form-label'},'Time'),e('input',{className:'form-input',type:'time',value:form.time,onChange:ev=>set('time',ev.target.value)}))),
-      e('div',{className:'form-group'},e('label',{className:'form-label'},'Type'),e('select',{className:'form-input',value:form.type,onChange:ev=>set('type',ev.target.value)},['Strength','Cardio','Flexibility','HIIT','General Fitness','Rehabilitation'].map(t=>e('option',{key:t,value:t},t)))),
-      e('div',{className:'form-group'},e('label',{className:'form-label'},'Notes'),e('textarea',{className:'form-input',rows:2,value:form.notes,onChange:ev=>set('notes',ev.target.value)})),
-      e('div',{style:{display:'flex',gap:8,justifyContent:'flex-end'}},e('button',{className:'btn',onClick:onClose},'Cancel'),e('button',{className:'btn btn-primary',disabled:!form.clientId,onClick:save},'Book'))
-    )
-  );
-}
-function RescheduleModal({clientId,apptId,appts,setAppts,clients,setClients,onClose}){
-  const appt=appts.find(a=>apptId?a.id===apptId:a.clientId===clientId&&a.status==='change-requested');
-  const [date,setDate]=useState(appt?.date||fmt(today));const [time,setTime]=useState(appt?.time||'09:00');const e=React.createElement;
-  const save=()=>{setAppts(appts.map(a=>a.id===appt?.id?{...a,date,time,status:'confirmed'}:a));setClients(cs=>cs.map(c=>c.id===clientId?{...c,changeReq:null}:c));onClose();};
-  return e('div',{className:'modal-overlay',onClick:ev=>ev.target===ev.currentTarget&&onClose()},
-    e('div',{className:'modal'},
-      e('div',{className:'modal-title'},'Reschedule Appointment'),
-      e('div',{className:'form-row'},e('div',{className:'form-group'},e('label',{className:'form-label'},'New Date'),e('input',{className:'form-input',type:'date',value:date,onChange:ev=>setDate(ev.target.value)})),e('div',{className:'form-group'},e('label',{className:'form-label'},'New Time'),e('input',{className:'form-input',type:'time',value:time,onChange:ev=>setTime(ev.target.value)}))),
-      e('div',{style:{display:'flex',gap:8,justifyContent:'flex-end'}},e('button',{className:'btn',onClick:onClose},'Cancel'),e('button',{className:'btn btn-primary',onClick:save},'Confirm'))
+      e('div',{className:'modal-title'},'Add Custom Session'),
+      e('div',{className:'form-row'},e('div',{className:'form-group'},e('label',{className:'form-label'},'Class Name'),e('input',{className:'form-input',placeholder:'e.g. Morning Blast',value:form.name,onChange:ev=>set('name',ev.target.value)})),e('div',{className:'form-group'},e('label',{className:'form-label'},'Time'),e('input',{className:'form-input',type:'time',value:form.time,onChange:ev=>set('time',ev.target.value)}))),
+      e('div',{className:'form-group'},e('label',{className:'form-label'},'Date'),e('input',{className:'form-input',type:'date',value:form.date,onChange:ev=>set('date',ev.target.value)})),
+      e('div',{className:'form-group'},
+        e('label',{className:'form-label'},'Add Clients ('+form.clientIds.length+' selected)'),
+        e('input',{className:'form-input',placeholder:'Search client...',value:search,onChange:ev=>setSearch(ev.target.value),style:{marginBottom:8}}),
+        e('div',{style:{maxHeight:160,overflowY:'auto',display:'flex',flexDirection:'column',gap:4}},
+          shown.map(cl=>{const on=form.clientIds.includes(cl.id);
+            return e('div',{key:cl.id,onClick:()=>toggle(cl.id),style:{display:'flex',alignItems:'center',gap:8,padding:'5px 8px',border:`0.5px solid ${on?'#185fa5':'var(--border)'}`,borderRadius:6,cursor:'pointer',background:on?'var(--bg-info)':'var(--bg-primary)',fontSize:12}},cl.name,on&&e('span',{style:{marginLeft:'auto',color:'var(--text-info)'}},'✓'));
+          })
+        )
+      ),
+      e('div',{style:{display:'flex',gap:8,justifyContent:'flex-end',marginTop:8}},e('button',{className:'btn',onClick:onClose},'Cancel'),e('button',{className:'btn btn-primary',disabled:!form.name||!form.date,onClick:()=>onSave(form)},'Create'))
     )
   );
 }
