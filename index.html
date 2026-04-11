@@ -671,65 +671,12 @@ function ScheduleView({sessions,clients,getSessionName,renameSession}){
 function ClientsView({clients,setClients,selClient,setSelClient,sessions,payments,photos,setPhotos,getSessionName}){
   const [search,setSearch]=useState('');
   const [editM,setEditM]=useState(null);
-  const [photoM,setPhotoM]=useState(null);
   const e=React.createElement;
 
   if(selClient){
-    const cl=clients.find(c=>c.id===selClient);if(!cl)return null;
-    const av=getAv(cl.name,cl.id);
-    const clSess=sessions.filter(s=>s.clientIds.includes(cl.id)&&s.date>=fmt(addD(today,-7))&&s.date<=fmt(addD(today,7))).sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time));
-    const clPay=payments.filter(p=>p.clientId===cl.id);
-    const bmi=cl.weight&&cl.height?(cl.weight/((cl.height/100)**2)).toFixed(1):'-';
-    const ph=photos[cl.id]||{};
-    const [activeTab,setActiveTab]=useState('Sessions');
-
-    return e('div',null,
-      e('div',{className:'ph'},
-        e('button',{className:'btn btn-sm',onClick:()=>setSelClient(null)},'← Back'),
-        e('div',{style:{display:'flex',gap:7,flexWrap:'wrap'}},
-          e('button',{className:'btn btn-sm',onClick:()=>setEditM(cl)},'Edit'),
-          e('button',{className:'btn btn-sm btn-insta',onClick:()=>setPhotoM(cl)},'📸 Progress & Share'),
-          e(WaBtn,{phone:cl.phone,label:'WhatsApp'})
-        )
-      ),
-      e('div',{className:'detail-panel'},
-        e('div',null,
-          e('div',{className:'card',style:{marginBottom:12}},
-            e('div',{style:{display:'flex',flexDirection:'column',alignItems:'center',paddingBottom:12,borderBottom:'0.5px solid var(--border)',marginBottom:12}},
-              e('div',{className:`avatar ${av.c}`,style:{width:52,height:52,fontSize:17,marginBottom:8}},av.init),
-              e('div',{style:{fontSize:15,fontWeight:600}},cl.name),
-              e('div',{style:{fontSize:12,color:'var(--text-secondary)'}},cl.email),
-              e('div',{className:'goal-tag'},cl.goal),
-              ph.before&&ph.after&&e('div',{style:{marginTop:6,fontSize:10,color:'#534AB7',background:'#EEEDFE',padding:'2px 8px',borderRadius:6}},'📸 Progress photos saved')
-            ),
-            [['Age',cl.age+' yrs'],['Weight',cl.weight+' kg'],['Height',cl.height+' cm'],['BMI',bmi],['Joined',cl.joinDate]].map(([k,v])=>e('div',{key:k,className:'metric-row'},e('span',{style:{color:'var(--text-secondary)'}},k),e('span',{style:{fontWeight:600}},v))),
-            cl.notes&&e('div',{style:{marginTop:10,fontSize:12,color:'var(--text-secondary)',lineHeight:1.5}},cl.notes)
-          )
-        ),
-        e('div',null,
-          e('div',{className:'tabs'},
-            ['Sessions','Payments'].map(t=>e('div',{key:t,className:`tab${activeTab===t?' active':''}`,onClick:()=>setActiveTab(t)},t))
-          ),
-          activeTab==='Sessions'&&(
-            clSess.length===0?e('div',{className:'empty-state'},'No sessions in ±7 days from today'):
-            e('div',{style:{display:'flex',flexDirection:'column',gap:7}},
-              clSess.map(s=>e('div',{key:s.id,style:{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'9px 12px',border:'0.5px solid var(--border)',borderRadius:var_rmd(),fontSize:12,background:'var(--bg-primary)'}},
-                e('div',null,e('span',{style:{fontWeight:600}},getSessionName(s)),' · ',s.time),
-                e('div',{style:{color:'var(--text-secondary)'}},fmtDate(s.date))
-              ))
-            )
-          ),
-          activeTab==='Payments'&&(
-            clPay.length===0?e('div',{className:'empty-state'},'No payments recorded'):
-            e('div',{style:{display:'flex',flexDirection:'column',gap:7}},
-              clPay.map(p=>e('div',{key:p.id,className:'pay-row'},e('div',{style:{flex:1}},e('div',{style:{fontSize:12,fontWeight:600}},p.desc),e('div',{style:{fontSize:10,color:'var(--text-secondary)'}},p.date)),e('div',{style:{textAlign:'right'}},e('div',{style:{fontWeight:600,fontSize:14}},fmtMoney(p.amount)),e('span',{className:`badge badge-${p.status}`},p.status))))
-            )
-          )
-        )
-      ),
-      editM&&e(EditClientModal,{client:editM,onSave:u=>{setClients(cs=>cs.map(c=>c.id===u.id?u:c));setEditM(null)},onClose:()=>setEditM(null)}),
-      photoM&&e(PhotoManager,{client:photoM,photos,setPhotos,onClose:()=>setPhotoM(null)})
-    );
+    const cl=clients.find(c=>c.id===selClient);
+    if(!cl){setSelClient(null);return null;}
+    return e(ClientDetail,{cl,clients,setClients,sessions,payments,photos,setPhotos,getSessionName,onBack:()=>setSelClient(null)});
   }
 
   const shown=clients.filter(c=>!search||c.name.toLowerCase().includes(search.toLowerCase())||c.goal.toLowerCase().includes(search.toLowerCase()));
@@ -752,7 +699,65 @@ function ClientsView({clients,setClients,selClient,setSelClient,sessions,payment
   );
 }
 
-function var_rmd(){return'var(--radius-md)';}
+/* ── CLIENT DETAIL (extracted to fix React Hooks rules) ── */
+function ClientDetail({cl,clients,setClients,sessions,payments,photos,setPhotos,getSessionName,onBack}){
+  const [activeTab,setActiveTab]=useState('Sessions');
+  const [editM,setEditM]=useState(null);
+  const [photoM,setPhotoM]=useState(null);
+  const av=getAv(cl.name,cl.id);
+  const clSess=sessions.filter(s=>s.clientIds.includes(cl.id)&&s.date>=fmt(addD(today,-7))&&s.date<=fmt(addD(today,7))).sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time));
+  const clPay=payments.filter(p=>p.clientId===cl.id);
+  const bmi=cl.weight&&cl.height?(cl.weight/((cl.height/100)**2)).toFixed(1):'-';
+  const ph=photos[cl.id]||{};
+  const e=React.createElement;
+  return e('div',null,
+    e('div',{className:'ph'},
+      e('button',{className:'btn btn-sm',onClick:onBack},'← Back'),
+      e('div',{style:{display:'flex',gap:7,flexWrap:'wrap'}},
+        e('button',{className:'btn btn-sm',onClick:()=>setEditM(cl)},'Edit'),
+        e('button',{className:'btn btn-sm btn-insta',onClick:()=>setPhotoM(cl)},'📸 Progress & Share'),
+        e(WaBtn,{phone:cl.phone,label:'WhatsApp'})
+      )
+    ),
+    e('div',{className:'detail-panel'},
+      e('div',null,
+        e('div',{className:'card',style:{marginBottom:12}},
+          e('div',{style:{display:'flex',flexDirection:'column',alignItems:'center',paddingBottom:12,borderBottom:'0.5px solid var(--border)',marginBottom:12}},
+            e('div',{className:`avatar ${av.c}`,style:{width:52,height:52,fontSize:17,marginBottom:8}},av.init),
+            e('div',{style:{fontSize:15,fontWeight:600}},cl.name),
+            e('div',{style:{fontSize:12,color:'var(--text-secondary)'}},cl.email),
+            e('div',{className:'goal-tag'},cl.goal),
+            ph.before&&ph.after&&e('div',{style:{marginTop:6,fontSize:10,color:'#534AB7',background:'#EEEDFE',padding:'2px 8px',borderRadius:6}},'📸 Progress photos saved')
+          ),
+          [['Age',cl.age+' yrs'],['Weight',cl.weight+' kg'],['Height',cl.height+' cm'],['BMI',bmi],['Joined',cl.joinDate]].map(([k,v])=>e('div',{key:k,className:'metric-row'},e('span',{style:{color:'var(--text-secondary)'}},k),e('span',{style:{fontWeight:600}},v))),
+          cl.notes&&e('div',{style:{marginTop:10,fontSize:12,color:'var(--text-secondary)',lineHeight:1.5}},cl.notes)
+        )
+      ),
+      e('div',null,
+        e('div',{className:'tabs'},
+          ['Sessions','Payments'].map(t=>e('div',{key:t,className:`tab${activeTab===t?' active':''}`,onClick:()=>setActiveTab(t)},t))
+        ),
+        activeTab==='Sessions'&&(
+          clSess.length===0?e('div',{className:'empty-state'},'No sessions in ±7 days from today'):
+          e('div',{style:{display:'flex',flexDirection:'column',gap:7}},
+            clSess.map(s=>e('div',{key:s.id,style:{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'9px 12px',border:'0.5px solid var(--border)',borderRadius:'8px',fontSize:12,background:'var(--bg-primary)'}},
+              e('div',null,e('span',{style:{fontWeight:600}},getSessionName(s)),' · ',s.time),
+              e('div',{style:{color:'var(--text-secondary)'}},fmtDate(s.date))
+            ))
+          )
+        ),
+        activeTab==='Payments'&&(
+          clPay.length===0?e('div',{className:'empty-state'},'No payments recorded'):
+          e('div',{style:{display:'flex',flexDirection:'column',gap:7}},
+            clPay.map(p=>e('div',{key:p.id,className:'pay-row'},e('div',{style:{flex:1}},e('div',{style:{fontSize:12,fontWeight:600}},p.desc),e('div',{style:{fontSize:10,color:'var(--text-secondary)'}},p.date)),e('div',{style:{textAlign:'right'}},e('div',{style:{fontWeight:600,fontSize:14}},fmtMoney(p.amount)),e('span',{className:`badge badge-${p.status}`},p.status))))
+          )
+        )
+      )
+    ),
+    editM&&e(EditClientModal,{client:editM,onSave:u=>{setClients(cs=>cs.map(c=>c.id===u.id?u:c));setEditM(null)},onClose:()=>setEditM(null)}),
+    photoM&&e(PhotoManager,{client:photoM,photos,setPhotos,onClose:()=>setPhotoM(null)})
+  );
+}
 
 /* ── PHOTO MANAGER ─────────────────────────────────────── */
 function PhotoManager({client,photos,setPhotos,onClose}){
@@ -772,9 +777,9 @@ function PhotoManager({client,photos,setPhotos,onClose}){
     e('div',{style:{fontSize:12,fontWeight:600,marginBottom:8,color:'var(--text-secondary)'}},label),
     e('label',{className:'photo-slot',style:{cursor:'pointer',display:'block',height:210}},
       loc[slot]
-        ?e('img',{src:loc[slot],alt:label,style:{width:'100%',height:210,objectFit:'cover',borderRadius:var_rmd()}})
+        ?e('img',{src:loc[slot],alt:label,style:{width:'100%',height:210,objectFit:'cover',borderRadius:'8px'}})
         :e('div',{style:{padding:20,color:'var(--text-secondary)',textAlign:'center',fontSize:12}},e('div',{style:{fontSize:30,marginBottom:8}},'📷'),e('div',null,'Tap to upload'),e('div',{style:{fontSize:10,marginTop:4}},'JPG or PNG')),
-      loc[slot]&&e('div',{className:'photo-overlay',style:{borderRadius:var_rmd()}},e('span',{style:{color:'#fff',fontSize:12}},'Change photo')),
+      loc[slot]&&e('div',{className:'photo-overlay',style:{borderRadius:'8px'}},e('span',{style:{color:'#fff',fontSize:12}},'Change photo')),
       e('input',{type:'file',accept:'image/*',style:{display:'none'},onChange:ev=>ev.target.files[0]&&handleFile(slot,ev.target.files[0])})
     ),
     loc[slot]&&e('div',{style:{fontSize:10,color:'var(--text-secondary)',marginTop:5}},loc[slot+'Date'])
