@@ -130,6 +130,7 @@ body{font-family:var(--font);background:var(--bg-t);color:var(--tx-p);min-height
 .cal-vbtn{padding:5px 11px;font-size:11px;cursor:pointer;color:var(--tx-s);background:var(--bg-p);border:none;border-right:.5px solid var(--bd);font-family:var(--font)}
 .cal-vbtn:last-child{border-right:none}
 .cal-vbtn.active{background:var(--bg-info);color:var(--tx-info);font-weight:600}
+.cal-week-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .s-block{border-radius:5px;padding:4px 7px;font-size:10px;cursor:pointer;margin-bottom:3px;border-left:3px solid #534ab7;background:#eeedfe;color:#534ab7;transition:all .1s;line-height:1.4}
 .s-block.oneone{border-left-color:#185fa5;background:var(--bg-info);color:var(--tx-info)}
 .s-block:hover{filter:brightness(.96)}
@@ -190,6 +191,23 @@ body{font-family:var(--font);background:var(--bg-t);color:var(--tx-p);min-height
   .dp{grid-template-columns:1fr}.fr{grid-template-columns:1fr}
   .client-grid{grid-template-columns:repeat(2,1fr)}.ph{flex-direction:column;align-items:flex-start}
   .sbar span:last-child{display:none}
+  /* calendar mobile */
+  .cal-hdr{flex-direction:column;align-items:stretch;padding:10px 12px;gap:10px}
+  .cal-nav{justify-content:space-between;width:100%}
+  .cal-title{min-width:unset;flex:1;font-size:12px}
+  .cal-vtoggle{width:100%}
+  .cal-vbtn{flex:1;text-align:center;padding:7px 4px;font-size:12px}
+  .week-hdr,.week-body{min-width:560px}
+  .month-cell{min-height:50px;padding:3px}
+  .month-dow{font-size:9px;padding:5px 1px}
+  .mdn{font-size:10px;width:18px;height:18px}
+  .mpill{font-size:8px;padding:1px 3px}
+  .day-scroll{max-height:60vh}
+  .day-grid{grid-template-columns:44px 1fr}
+  .day-hl{font-size:9px;padding:3px 5px 0 0}
+  .s-tip{display:none!important}
+  .cal-shell{overflow:hidden}
+  .cal-week-wrap{border-top:.5px solid var(--bd)}
 }
   </style>
 </head>
@@ -390,7 +408,7 @@ function SessionBlock({session,clients,schedules,setSchedules,is1on1}){
 
 /* ─── DASHBOARD ──────────────────────────────────────────── */
 function Dashboard({schedules,customs,clients,payments,getClient,setModal}){
-  const [calView,setCalView]=useState('weekly');
+  const [calView,setCalView]=useState(()=>window.innerWidth<=700?'daily':'weekly');
   const [refDate,setRefDate]=useState(new Date(today));
   const earned=payments.filter(p=>p.status==='paid').reduce((s,p)=>s+p.amount,0);
   const overdue=payments.filter(p=>p.status==='overdue');
@@ -436,8 +454,18 @@ function DailyView({refDate,schedules,customs,clients}){
   const ds=fmt(refDate);
   const sess=getSessionsForRange(schedules,customs,ds,ds);
   const hours=Array.from({length:16},(_,i)=>i+5);
+  const scrollRef=useRef(null);
   const e=React.createElement;
-  return e('div',{className:'day-scroll'},e('div',{className:'day-grid'},
+  useEffect(()=>{
+    if(!scrollRef.current)return;
+    const isToday=ds===fmt(today);
+    const curH=new Date().getHours();
+    const firstSessH=sess.length>0?parseInt(sess[0].time.split(':')[0],10):null;
+    const targetH=isToday?(firstSessH||curH):firstSessH||5;
+    const idx=hours.indexOf(targetH);
+    if(idx>=0){const offset=Math.max(0,(idx-1)*56);scrollRef.current.scrollTop=offset;}
+  },[ds]);
+  return e('div',{className:'day-scroll',ref:scrollRef},e('div',{className:'day-grid'},
     hours.flatMap(h=>{
       const label=(h<12?h:h===12?12:h-12)+':00'+(h<12?' am':' pm');
       const sl=sess.filter(s=>{const[hh]=s.time.split(':').map(Number);return hh===h});
@@ -450,7 +478,14 @@ function WeeklyView({refDate,schedules,customs,clients}){
   const mon=new Date(refDate);mon.setDate(mon.getDate()-((mon.getDay()+6)%7));
   const days=Array.from({length:7},(_,i)=>{const d=new Date(mon);d.setDate(d.getDate()+i);return d});
   const todayStr=fmt(today);const e=React.createElement;
-  return e('div',null,
+  const scrollRef=useRef(null);
+  useEffect(()=>{
+    if(scrollRef.current){
+      const todayIdx=days.findIndex(d=>fmt(d)===todayStr);
+      if(todayIdx>=0){const col=scrollRef.current.querySelector('.week-col-h.tc');if(col)col.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});}
+    }
+  },[refDate]);
+  return e('div',{className:'cal-week-wrap',ref:scrollRef},
     e('div',{className:'week-hdr'},days.map(d=>{const ds=fmt(d),isT=ds===todayStr;return e('div',{key:ds,className:`week-col-h${isT?' tc':''}`},d.toLocaleDateString('en-CA',{weekday:'short'}),e('span',{className:'dn'},d.getDate()));})),
     e('div',{className:'week-body'},days.map(d=>{const ds=fmt(d),isT=ds===todayStr;const da=getSessionsForRange(schedules,customs,ds,ds);
       return e('div',{key:ds,className:`week-col${isT?' tc':''}`},da.length===0?e('div',{style:{fontSize:10,color:'var(--tx-s)',textAlign:'center',marginTop:8,opacity:.4}},'—'):da.map(s=>e(SessionBlock,{key:s.id,session:s,clients,schedules,setSchedules:()=>{},is1on1:s.is1on1})));
@@ -462,11 +497,13 @@ function MonthlyView({refDate,schedules,customs,clients}){
   const first=new Date(yr,mo,1),offset=(first.getDay()+6)%7,dim=new Date(yr,mo+1,0).getDate(),prev=new Date(yr,mo,0).getDate();
   const total=Math.ceil((dim+offset)/7)*7,todayStr=fmt(today);const e=React.createElement;
   const cells=Array.from({length:total},(_,i)=>{let d,it=true;if(i<offset){d=new Date(yr,mo-1,prev-offset+i+1);it=false}else if(i>=offset+dim){d=new Date(yr,mo+1,i-offset-dim+1);it=false}else d=new Date(yr,mo,i-offset+1);return{d,it}});
+  const todayRef=useRef(null);
+  useEffect(()=>{if(todayRef.current)todayRef.current.scrollIntoView({block:'nearest',behavior:'smooth'})},[yr,mo]);
   return e('div',{className:'month-grid'},
     ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>e('div',{key:d,className:'month-dow'},d)),
     cells.map(({d,it},i)=>{
       const ds=fmt(d),isT=ds===todayStr;const da=getSessionsForRange(schedules,customs,ds,ds);const show=da.slice(0,2),more=da.length-2;
-      return e('div',{key:i,className:`month-cell${!it?' om':''}${isT?' tdc':''}`},
+      return e('div',{key:i,ref:isT?todayRef:null,className:`month-cell${!it?' om':''}${isT?' tdc':''}`},
         e('div',{className:`mdn${isT?' tn':''}`},d.getDate()),
         show.map(s=>e('div',{key:s.id,className:'s-wrap'},
           e('div',{className:`mpill${s.is1on1?' oneone':''}`,title:s.name},s.name.split(' ')[0]+' '+s.time.slice(0,5)+' ('+s.clientIds.length+')'),
